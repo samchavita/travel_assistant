@@ -1,6 +1,9 @@
+// flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8080
+
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-
+import 'login_page.dart';
 import 'dart:async';
 
 void main() {
@@ -14,13 +17,24 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Travel App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.teal,
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
         ),
       ),
-      home: Scaffold(
+      home: LandingPage(),
+    );
+  }
+}
+
+class LandingPage extends StatelessWidget {
+  // const LandingPage({super.key})
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
         body: Stack(
           children: [
             // add a video in the background here that will play on loop covering the entire screen
@@ -47,21 +61,30 @@ class WelcomePage extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    Text(
-                      'Get Started!',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    LoginPage()));
+                      },
+                      child: Text('Get started'),
                     ),
+                    // Text(
+                    //   'Get Started!',
+                    //   style: TextStyle(
+                    //     fontSize: 15,
+                    //     fontWeight: FontWeight.bold,
+                    //     color: Colors.white,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
             ),
           ],
         ),
-      ),
     );
   }
 }
@@ -121,14 +144,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   void dispose() {
     // Ensure disposing of the VideoPlayerController to free up resources.
     _controller.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: const Text('Butterfly Video')),
       // Use a FutureBuilder to display a loading spinner while waiting for the
       // VideoPlayerController to finish initializing.
       body: FutureBuilder(
@@ -154,29 +175,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
           }
         },
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   // auto play the video
-
-      //   onPressed: () {
-      //     // Wrap the play or pause in a call to `setState`. This ensures the
-      //     // correct icon is shown.
-      //     setState(() {
-      //       // If the video is playing, pause it.
-      //       if (!_controller.value.isPlaying) {
-      //         // If the video is paused, play it.
-      //         _controller.play();
-      //       }
-      //     });
-      //   },
-      //   // Display the correct icon depending on the state of the player.
-      //   child: Icon(
-      //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-      //   ),
-      // ),
     );
   }
 }
-
-
 
 
