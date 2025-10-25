@@ -1,10 +1,9 @@
 // flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8080
 
-
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'login_page.dart';
-import 'dart:async';
+
 
 void main() {
   runApp(const WelcomePage());
@@ -35,61 +34,74 @@ class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-          children: [
-            // add a video in the background here that will play on loop covering the entire screen
-            // VideoPlayerWidget(),
-            VideoPlayerScreen(),
-            // Image.asset(
-            //   'assets/images/flower.jpg',
-            //   fit: BoxFit.cover,
-            //   height: double.infinity,
-            //   width: double.infinity,
-            // ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 50.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Welcome Back!',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+      body: Stack(
+        children: [
+          // add a video in the background here that will play on loop covering the entire screen
+          // VideoPlayerWidget(),
+          VideoPlayerScreen(),
+          // Image.asset(
+          //   'assets/images/flower.jpg',
+          //   fit: BoxFit.cover,
+          //   height: double.infinity,
+          //   width: double.infinity,
+          // ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Welcome Back!',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 30.0),
+                  SizedBox(
+                    height: 45,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.teal,
                       ),
-                    ),
-                    TextButton(
+                      child: Text(
+                        'Get Started',
+                        style: TextStyle(fontSize: 20),
+                      ),
                       onPressed: () {
+                        print('Getting Started');
+
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    LoginPage()));
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
                       },
-                      child: Text('Get started'),
                     ),
-                    // Text(
-                    //   'Get Started!',
-                    //   style: TextStyle(
-                    //     fontSize: 15,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.white,
-                    //   ),
-                    // ),
-                  ],
-                ),
+                  ),
+
+                  SizedBox(height: 30.0),
+                  // Text(
+                  //   'Get Started!',
+                  //   style: TextStyle(
+                  //     fontSize: 15,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Colors.white,
+                  //   ),
+                  // ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 }
-
-
 
 // void main() => runApp(const VideoPlayerApp());
 
@@ -178,5 +190,3 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     );
   }
 }
-
-
