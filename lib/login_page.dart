@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_app/dashboard.dart';
 
 // LOG IN PAGE
 class LoginPage extends StatefulWidget {
@@ -190,6 +191,10 @@ class LoginState extends State<LoginPage> {
                     child: Text('Log in ', style: TextStyle(fontSize: 20)),
                     onPressed: () {
                       print('Successfully log in ');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Dashboard()),
+                      );
                     },
                   ),
                 ),
