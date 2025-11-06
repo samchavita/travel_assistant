@@ -1,15 +1,19 @@
 // flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8080
 
 import 'package:flutter/material.dart';
-import 'package:travel_app/trips_page.dart';
 import 'package:video_player/video_player.dart';
 import 'login_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Adjust the path as needed
 
 
-
-void main() async {
-  runApp(const WelcomePage());
+void main() {
+  runApp(
+    // 1. ProviderScope must be the outermost widget
+    ProviderScope(
+      child: const WelcomePage(),
+    ),
+  );
 }
 
 class WelcomePage extends StatelessWidget {
@@ -26,7 +30,7 @@ class WelcomePage extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      home: TripsPage(),
+      home: LandingPage(),
     );
   }
 }
