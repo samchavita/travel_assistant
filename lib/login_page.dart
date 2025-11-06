@@ -1,8 +1,6 @@
 import 'package:dbcrypt/dbcrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_app/dashboard.dart';
-import 'package:travel_app/database.dart';
-import 'package:drift/src/runtime/data_class.dart';
 
 // LOG IN PAGE
 class LoginPage extends StatefulWidget {
@@ -236,37 +234,6 @@ class LoginState extends State<LoginPage> {
   }
 
   Future<bool> _logIn() async {
-    final username = _unameController.text.trim();
-    final password = _passwordController.text;
-
-    // Basic validation
-    if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields')),
-      );
-      return false;
-    }
-
-    try {
-      final db = AppDatabase(); // make sure you have an instance
-      db.authenticate(username, password);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Authentication success!')),
-      );
-
-      // Clear form fields
-      _unameController.clear();
-      _passwordController.clear();
-
-      return true;
-    } catch (e) {
-      // Error handling
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('❌ Username or password does not exist: $e')));
-    }
-
     return true;
   }
 }
@@ -475,59 +442,7 @@ class SignUpState extends State<SignUpPage> {
   }
 
   Future<void> _registerUser() async {
-    final username = _usernameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-    final confirmPassword = _confirmPasswordController.text;
-
-    // Basic validation
-    if (username.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields')),
-      );
-      return;
-    }
-
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
-      return;
-    }
-
-    try {
-      // 1️⃣ Hash the password using DBCrypt (synchronous)
-      final dcrypt = DBCrypt();
-      final hashedPassword = dcrypt.hashpw(password, dcrypt.gensalt());
-
-      // 2️⃣ Insert the user into the Drift database
-      final db = AppDatabase(); // make sure you have an instance
-      await db
-          .into(db.users)
-          .insert(
-            UsersCompanion.insert(
-              username: Value(username),
-              email: Value(email),
-              passwordHash: hashedPassword,
-            ),
-          );
-
-      // 3️⃣ Success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('✅ User registered successfully!')),
-      );
-
-      // 4️⃣ Clear form fields
-      _usernameController.clear();
-      _emailController.clear();
-      _passwordController.clear();
-      _confirmPasswordController.clear();
-    } catch (e) {
-      // Error handling
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('❌ Error registering user: $e')));
-    }
+    return;
   }
 }
 
