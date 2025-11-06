@@ -1,4 +1,7 @@
+import 'package:dbcrypt/dbcrypt.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_app/database.dart';
+import 'package:drift/src/runtime/data_class.dart';
 
 // LOG IN PAGE
 class LoginPage extends StatefulWidget {
@@ -21,7 +24,6 @@ class LoginState extends State<LoginPage> {
           padding: const EdgeInsets.all(40.0),
           child: Column(
             children: <Widget>[
-              
               Padding(
                 padding: const EdgeInsets.only(top: 110.0),
                 child: Center(
@@ -40,15 +42,15 @@ class LoginState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: Center(
-                  child: Text( 
+                  child: Text(
                     'Enter your email and password to access your account securly.',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 16,
                       color: Colors.grey,
                     ),
-                    textAlign: TextAlign.center
-                    
+                    textAlign: TextAlign.center,
+
                     // decoration: InputDecoration(
                     //   filled: true,
                     //   fillColor: Colors.white,
@@ -78,7 +80,6 @@ class LoginState extends State<LoginPage> {
                   ),
                 ),
               ),
-
 
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
@@ -219,7 +220,6 @@ class LoginState extends State<LoginPage> {
   }
 }
 
-
 // SIGN UP PAGE
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -229,7 +229,33 @@ class SignUpPage extends StatefulWidget {
 }
 
 class SignUpState extends State<SignUpPage> {
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
+  // import 'package:travel_app/database.dart';
+  // import 'package:drift/src/runtime/data_class.dart';
+  // import 'package:dbcrypt/dbcrypt.dart';
+
+  //   WidgetsFlutterBinding.ensureInitialized();
+
+  //   final database = AppDatabase();
+
+  //   final bcrypt = DBCrypt();
+  //   final hashedPassword = bcrypt.hashpw('something', bcrypt.gensalt());
+  //   await database
+  //       .into(database.users)
+  //       .insert(
+  //         UsersCompanion.insert(
+  //           username: Value('samuel'),
+  //           email: Value('me@ndhu.com'),
+  //           passwordHash: hashedPassword,
+  //         ),
+  //       );
+  //   List<User> allItems = await database.select(database.users).get();
+
+  //   print('items in database: $allItems');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -255,20 +281,18 @@ class SignUpState extends State<SignUpPage> {
                 ),
               ),
 
-
-
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: Center(
-                  child: Text( 
+                  child: Text(
                     'Create a new account to get started and use our features!',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 16,
                       color: Colors.grey,
                     ),
-                    textAlign: TextAlign.center
-                    
+                    textAlign: TextAlign.center,
+
                     // decoration: InputDecoration(
                     //   filled: true,
                     //   fillColor: Colors.white,
@@ -286,6 +310,7 @@ class SignUpState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -293,7 +318,7 @@ class SignUpState extends State<SignUpPage> {
                       borderRadius: BorderRadius.circular(60.0),
                       borderSide: BorderSide(color: Colors.white, width: 2.0),
                     ),
-                    labelText: 'Name',
+                    labelText: 'Username',
                     hintText: 'Lin',
                   ),
                 ),
@@ -302,6 +327,7 @@ class SignUpState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -318,6 +344,7 @@ class SignUpState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     filled: true,
@@ -335,6 +362,7 @@ class SignUpState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _confirmPasswordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     filled: true,
@@ -362,6 +390,7 @@ class SignUpState extends State<SignUpPage> {
                     child: Text('Sign up', style: TextStyle(fontSize: 20)),
                     onPressed: () {
                       print('Successfully log in ');
+                      _registerUser;
                     },
                   ),
                 ),
@@ -388,8 +417,63 @@ class SignUpState extends State<SignUpPage> {
       ),
     );
   }
+
+Future<void> _registerUser() async {
+  final username = _usernameController.text.trim();
+  final email = _emailController.text.trim();
+  final password = _passwordController.text;
+  final confirmPassword = _confirmPasswordController.text;
+
+  // Basic validation
+  if (username.isEmpty || email.isEmpty || password.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please fill all required fields')),
+    );
+    return;
+  }
+
+  if (password != confirmPassword) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Passwords do not match')),
+    );
+    return;
+  }
+
+  try {
+    // 1️⃣ Hash the password using DBCrypt (synchronous)
+    final dcrypt = DBCrypt();
+    final hashedPassword = dcrypt.hashpw(password, dcrypt.gensalt());
+
+    // 2️⃣ Insert the user into the Drift database
+    final db = AppDatabase(); // make sure you have an instance
+    await db.into(db.users).insert(
+          UsersCompanion.insert(
+            username: Value(username),
+            email: Value(email),
+            passwordHash: hashedPassword,
+          ),
+        );
+
+    // 3️⃣ Success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('✅ User registered successfully!')),
+    );
+
+    // 4️⃣ Clear form fields
+    _usernameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+  } catch (e) {
+    // Error handling
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('❌ Error registering user: $e')),
+    );
+  }
 }
 
+
+}
 
 // FORGOT PASSWORD PAGE
 class ForgotPwdPage extends StatefulWidget {
@@ -400,7 +484,6 @@ class ForgotPwdPage extends StatefulWidget {
 }
 
 class ForgotPwdState extends State<ForgotPwdPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -426,19 +509,18 @@ class ForgotPwdState extends State<ForgotPwdPage> {
                 ),
               ),
 
-
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: Center(
-                  child: Text( 
+                  child: Text(
                     'Enter your email address associated to your account to receive a reset link and regain access to your account.',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 16,
                       color: Colors.grey,
                     ),
-                    textAlign: TextAlign.center
-                    
+                    textAlign: TextAlign.center,
+
                     // decoration: InputDecoration(
                     //   filled: true,
                     //   fillColor: Colors.white,
@@ -468,7 +550,6 @@ class ForgotPwdState extends State<ForgotPwdPage> {
                   ),
                 ),
               ),
-
 
               Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 0),

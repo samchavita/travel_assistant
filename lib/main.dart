@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'login_page.dart';
+// Adjust the path as needed
 
 
-void main() {
+
+void main() async {
   runApp(const WelcomePage());
 }
 
@@ -29,6 +31,8 @@ class WelcomePage extends StatelessWidget {
 }
 
 class LandingPage extends StatelessWidget {
+  const LandingPage({super.key});
+
   // const LandingPage({super.key})
 
   @override

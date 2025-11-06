@@ -42,6 +42,14 @@ dependencies:
   firebase_storage: ^13.0.3
   sqlite3_flutter_libs: ^0.5.40
   drift: ^2.29.0
+  drift_flutter: ^0.2.7
+  path_provider: ^2.1.5
+  provider: ^6.1.5+1
+  get_it: ^8.2.0
+  convert: ^3.1.2
+  flutter_bcrypt: ^1.0.8
+  dbcrypt: ^2.0.0
+  
   # For Firestore (NoSQL database)
   # Optional: For user authentication
   # Optional: For file storage
