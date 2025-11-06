@@ -1,5 +1,6 @@
 import 'package:dbcrypt/dbcrypt.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_app/dashboard.dart';
 import 'package:travel_app/database.dart';
 import 'package:drift/src/runtime/data_class.dart';
 
@@ -191,6 +192,10 @@ class LoginState extends State<LoginPage> {
                     child: Text('Log in ', style: TextStyle(fontSize: 20)),
                     onPressed: () {
                       print('Successfully log in ');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Dashboard()),
+                      );
                     },
                   ),
                 ),

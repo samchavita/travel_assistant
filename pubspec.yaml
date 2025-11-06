@@ -32,6 +32,13 @@ dependencies:
     sdk: flutter
   
   video_player: ^2.8.1
+  
+  # Maps Packages
+  intl: ^0.18.1
+  flutter_map: ^6.1.0 # Or the latest version
+  latlong2: ^0.9.0 # Dependency for flutter_map
+  geocoding: ^2.1.1 # Or the latest version
+  url_launcher: ^6.2.1 # If you want to open URLs like boarding passes
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -53,6 +60,7 @@ dependencies:
   # For Firestore (NoSQL database)
   # Optional: For user authentication
   # Optional: For file storage
+  searchable_listview: ^2.19.3
 
 dev_dependencies:
   flutter_test:
@@ -111,3 +119,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+  
