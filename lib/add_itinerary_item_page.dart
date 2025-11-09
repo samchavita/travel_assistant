@@ -6,7 +6,7 @@ import '../models/itinerary_item.dart';
 class AddItineraryItemPage extends StatefulWidget {
   final Trip trip;
 
-  const AddItineraryItemPage({Key? key, required this.trip}) : super(key: key);
+  const AddItineraryItemPage({super.key, required this.trip});
 
   @override
   State<AddItineraryItemPage> createState() => _AddItineraryItemPageState();
@@ -33,6 +33,7 @@ class _AddItineraryItemPageState extends State<AddItineraryItemPage> {
     if (date == null) return;
 
     final time = await showTimePicker(
+      // ignore: use_build_context_synchronously
       context: context,
       initialTime: const TimeOfDay(hour: 9, minute: 0),
     );

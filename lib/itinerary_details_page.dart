@@ -8,7 +8,7 @@ import 'add_itinerary_item_page.dart'; // Will create this next
 class ItineraryDetailsPage extends StatefulWidget {
   final Trip trip;
 
-  const ItineraryDetailsPage({Key? key, required this.trip}) : super(key: key);
+  const ItineraryDetailsPage({super.key, required this.trip});
 
   @override
   State<ItineraryDetailsPage> createState() => _ItineraryDetailsPageState();
@@ -167,11 +167,11 @@ class ItineraryTimelineItem extends StatelessWidget {
   final bool isLast;
 
   const ItineraryTimelineItem({
-    Key? key,
+    super.key,
     required this.item,
     required this.timeFormatter,
     this.isLast = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
