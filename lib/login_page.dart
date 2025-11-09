@@ -1,6 +1,7 @@
 import 'package:dbcrypt/dbcrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_app/dashboard.dart';
+import 'main_navigation.dart';
 
 // LOG IN PAGE
 class LoginPage extends StatefulWidget {
@@ -202,7 +203,7 @@ class LoginState extends State<LoginPage> {
                         print('Successs');
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => Dashboard()),
+                          MaterialPageRoute(builder: (context) => MainNavigation()),
                         );
                       }
                     },

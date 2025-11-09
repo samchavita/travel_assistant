@@ -1,11 +1,11 @@
 // lib/pages/upcoming_trips_page.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../models/trip.dart'; // Make sure to create this file
-import 'itinerary_details_page.dart'; // Will create this next
+import '../models/trip.dart';
+import 'itinerary_details_page.dart';
 
 class TripsPage extends StatefulWidget {
-  const TripsPage({Key? key}) : super(key: key);
+  const TripsPage({super.key});
 
   @override
   State<TripsPage> createState() => _TripsPageState();
@@ -49,18 +49,7 @@ class _TripsPageState extends State<TripsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Itinerary', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              // Handle menu press
-            },
-          ),
-        ],
-      ),
+      backgroundColor: Colors.grey[100],
       body: Stack(
         children: [
           Column(
@@ -69,8 +58,8 @@ class _TripsPageState extends State<TripsPage> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  'Upcoming Trips 2020',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  'Upcoming Trips',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -128,7 +117,7 @@ class _TripsPageState extends State<TripsPage> {
 class TripCard extends StatelessWidget {
   final Trip trip;
 
-  const TripCard({Key? key, required this.trip}) : super(key: key);
+  const TripCard({super.key, required this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -136,8 +125,8 @@ class TripCard extends StatelessWidget {
 
   return Card(
     margin: const EdgeInsets.only(bottom: 16.0),
-    elevation: 0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 4.0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     child: Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -164,7 +153,7 @@ class TripCard extends StatelessWidget {
                 Text(
                   trip.destination,
                   style: const TextStyle(
-                    fontSize: 18,
+                    color: Colors.teal,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
