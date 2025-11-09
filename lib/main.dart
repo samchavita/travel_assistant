@@ -1,7 +1,6 @@
 // flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8080
 
 import 'package:flutter/material.dart';
-import 'package:travel_app/trips_page.dart';
 import 'package:video_player/video_player.dart';
 import 'login_page.dart';
 
@@ -24,7 +23,7 @@ class WelcomePage extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      home: TripsPage(),
+      home: LandingPage(),
     );
   }
 }

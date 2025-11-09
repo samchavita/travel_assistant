@@ -16,23 +16,23 @@ class _TripsPageState extends State<TripsPage> {
   final List<Trip> _upcomingTrips = [
     Trip(
       id: '1',
-      destination: 'Dong Hwa Bridge',
+      destination: 'NDHU Library',
       country: 'Shoufeng',
       startDate: DateTime(2020, 1, 17),
       endDate: DateTime(2020, 1, 24),
       durationDays: 7,
       type: 'Business',
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/a8/32/57/caption.jpg?w=1200&h=-1&s=1',
+      imageUrl: 'assets/images/ndhu_library.png',
     ),
     Trip(
       id: '2',
-      destination: 'NDHU Library',
+      destination: 'NDHU Solar Farm',
       country: 'Shoufeng',
       startDate: DateTime(2020, 2, 14),
       endDate: DateTime(2020, 2, 17),
       durationDays: 4,
       type: 'Vacation',
-      imageUrl: 'https://i.pinimg.com/736x/0f/48/82/0f488257c7f27f206f66896f1b759e80.jpg', // Example image
+      imageUrl: 'assets/images/solar_farm.png', // Example image
     ),
     Trip(
       id: '3',
@@ -42,7 +42,7 @@ class _TripsPageState extends State<TripsPage> {
       endDate: DateTime(2020, 3, 15),
       durationDays: 5,
       type: 'Business',
-      imageUrl: 'https://b027.ndhu.edu.tw/ezfiles/114/1114/img/1810/gallery_329_2712221_14373.jpg', // Example image
+      imageUrl: 'assets/images/dorm_V.png', // Example image
     ),
   ];
 
@@ -50,7 +50,7 @@ class _TripsPageState extends State<TripsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Intinerary', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text('Itinerary', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: false,
         actions: [
           IconButton(
