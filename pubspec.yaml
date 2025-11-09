@@ -1,3 +1,7 @@
+# flutter pub upgrade --major-versions
+   
+
+
 name: travel_app
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
@@ -34,25 +38,26 @@ dependencies:
   video_player: ^2.8.1
   
   # Maps Packages
-  intl: ^0.18.1
-  flutter_map: ^6.1.0 # Or the latest version
+  intl: ^0.20.2
+  flutter_map: ^8.2.2 # Or the latest version
   latlong2: ^0.9.0 # Dependency for flutter_map
-  geocoding: ^2.1.1 # Or the latest version
+  geocoding: ^4.0.0 # Or the latest version
   url_launcher: ^6.2.1 # If you want to open URLs like boarding passes
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  firebase_core: ^4.2.0
-  cloud_firestore: ^6.0.3
-  firebase_auth: ^6.1.1
-  firebase_storage: ^13.0.3
-  sqlite3_flutter_libs: ^0.5.40
-  drift: ^2.29.0
+  path_provider: ^2.1.5
+  provider: ^6.1.5+1
+  flutter_bcrypt: ^1.0.8
+  dbcrypt: ^2.0.0
+  
   # For Firestore (NoSQL database)
   # Optional: For user authentication
   # Optional: For file storage
-  searchable_listview: ^2.19.3
+  # searchable_listview: ^2.19.3
+  hive_ce: ^2.15.1
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -64,8 +69,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  drift_dev: ^2.29.0
   build_runner: ^2.10.1
+  custom_lint: ^0.8.1
+  hive_ce_generator: ^1.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

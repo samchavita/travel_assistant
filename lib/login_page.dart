@@ -1,3 +1,4 @@
+import 'package:dbcrypt/dbcrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_app/dashboard.dart';
 
@@ -12,6 +13,9 @@ class LoginPage extends StatefulWidget {
 class LoginState extends State<LoginPage> {
   bool _isChecked = false;
 
+  final _unameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +26,6 @@ class LoginState extends State<LoginPage> {
           padding: const EdgeInsets.all(40.0),
           child: Column(
             children: <Widget>[
-              
               Padding(
                 padding: const EdgeInsets.only(top: 110.0),
                 child: Center(
@@ -41,15 +44,15 @@ class LoginState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: Center(
-                  child: Text( 
+                  child: Text(
                     'Enter your email and password to access your account securly.',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 16,
                       color: Colors.grey,
                     ),
-                    textAlign: TextAlign.center
-                    
+                    textAlign: TextAlign.center,
+
                     // decoration: InputDecoration(
                     //   filled: true,
                     //   fillColor: Colors.white,
@@ -67,6 +70,7 @@ class LoginState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _unameController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -74,16 +78,16 @@ class LoginState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(60.0),
                       borderSide: BorderSide(color: Colors.white, width: 2.0),
                     ),
-                    labelText: 'Email',
-                    hintText: 'example@gmail.com',
+                    labelText: 'username',
+                    hintText: 'Lin',
                   ),
                 ),
               ),
 
-
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     filled: true,
@@ -189,12 +193,18 @@ class LoginState extends State<LoginPage> {
                       backgroundColor: Colors.teal,
                     ),
                     child: Text('Log in ', style: TextStyle(fontSize: 20)),
-                    onPressed: () {
-                      print('Successfully log in ');
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => Dashboard()),
-                      );
+                    onPressed: () async {
+                      print('Attempting to log in');
+
+                      final success = await _logIn();
+                      if (success) {
+
+                        print('Successs');
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => Dashboard()),
+                        );
+                      }
                     },
                   ),
                 ),
@@ -222,8 +232,11 @@ class LoginState extends State<LoginPage> {
       ),
     );
   }
-}
 
+  Future<bool> _logIn() async {
+    return true;
+  }
+}
 
 // SIGN UP PAGE
 class SignUpPage extends StatefulWidget {
@@ -234,6 +247,33 @@ class SignUpPage extends StatefulWidget {
 }
 
 class SignUpState extends State<SignUpPage> {
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  // import 'package:travel_app/database.dart';
+  // import 'package:drift/src/runtime/data_class.dart';
+  // import 'package:dbcrypt/dbcrypt.dart';
+
+  //   WidgetsFlutterBinding.ensureInitialized();
+
+  //   final database = AppDatabase();
+
+  //   final bcrypt = DBCrypt();
+  //   final hashedPassword = bcrypt.hashpw('something', bcrypt.gensalt());
+  //   await database
+  //       .into(database.users)
+  //       .insert(
+  //         UsersCompanion.insert(
+  //           username: Value('samuel'),
+  //           email: Value('me@ndhu.com'),
+  //           passwordHash: hashedPassword,
+  //         ),
+  //       );
+  //   List<User> allItems = await database.select(database.users).get();
+
+  //   print('items in database: $allItems');
 
   @override
   Widget build(BuildContext context) {
@@ -260,20 +300,18 @@ class SignUpState extends State<SignUpPage> {
                 ),
               ),
 
-
-
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: Center(
-                  child: Text( 
+                  child: Text(
                     'Create a new account to get started and use our features!',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 16,
                       color: Colors.grey,
                     ),
-                    textAlign: TextAlign.center
-                    
+                    textAlign: TextAlign.center,
+
                     // decoration: InputDecoration(
                     //   filled: true,
                     //   fillColor: Colors.white,
@@ -291,6 +329,7 @@ class SignUpState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -298,7 +337,7 @@ class SignUpState extends State<SignUpPage> {
                       borderRadius: BorderRadius.circular(60.0),
                       borderSide: BorderSide(color: Colors.white, width: 2.0),
                     ),
-                    labelText: 'Name',
+                    labelText: 'Username',
                     hintText: 'Lin',
                   ),
                 ),
@@ -307,6 +346,7 @@ class SignUpState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -323,6 +363,7 @@ class SignUpState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     filled: true,
@@ -340,6 +381,7 @@ class SignUpState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
+                  controller: _confirmPasswordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     filled: true,
@@ -367,6 +409,11 @@ class SignUpState extends State<SignUpPage> {
                     child: Text('Sign up', style: TextStyle(fontSize: 20)),
                     onPressed: () {
                       print('Successfully log in ');
+                      _registerUser;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Dashboard()),
+                      );
                     },
                   ),
                 ),
@@ -393,8 +440,11 @@ class SignUpState extends State<SignUpPage> {
       ),
     );
   }
-}
 
+  Future<void> _registerUser() async {
+    return;
+  }
+}
 
 // FORGOT PASSWORD PAGE
 class ForgotPwdPage extends StatefulWidget {
@@ -405,7 +455,6 @@ class ForgotPwdPage extends StatefulWidget {
 }
 
 class ForgotPwdState extends State<ForgotPwdPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -431,19 +480,18 @@ class ForgotPwdState extends State<ForgotPwdPage> {
                 ),
               ),
 
-
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: Center(
-                  child: Text( 
+                  child: Text(
                     'Enter your email address associated to your account to receive a reset link and regain access to your account.',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 16,
                       color: Colors.grey,
                     ),
-                    textAlign: TextAlign.center
-                    
+                    textAlign: TextAlign.center,
+
                     // decoration: InputDecoration(
                     //   filled: true,
                     //   fillColor: Colors.white,
@@ -473,7 +521,6 @@ class ForgotPwdState extends State<ForgotPwdPage> {
                   ),
                 ),
               ),
-
 
               Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 0),

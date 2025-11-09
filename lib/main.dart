@@ -3,10 +3,39 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'login_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Adjust the path as needed
+// import 'dart:io';
+
+// import 'package:hive/hive_registrar.g.dart';
+// import 'package:hive_ce/hive.dart';
+// import 'package:meta/meta.dart';
+
+// @immutable
+// class User {
+//   const User({
+//     required this.username,
+//     required this.email,
+//   });
+
+//   final String username;
+//   final String email;
+
+//   @override
+//   String toString() {
+//     return '$username: $email';
+//   }
+// }
 
 
 void main() {
-  runApp(const WelcomePage());
+  runApp(
+    // 1. ProviderScope must be the outermost widget
+    ProviderScope(
+      child: const WelcomePage(),
+    ),
+  );
 }
 
 class WelcomePage extends StatelessWidget {
@@ -29,6 +58,8 @@ class WelcomePage extends StatelessWidget {
 }
 
 class LandingPage extends StatelessWidget {
+  const LandingPage({super.key});
+
   // const LandingPage({super.key})
 
   @override
