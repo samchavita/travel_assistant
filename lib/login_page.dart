@@ -413,7 +413,7 @@ class SignUpState extends State<SignUpPage> {
                       _registerUser;
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => Dashboard()),
+                        MaterialPageRoute(builder: (context) => MainNavigation()),
                       );
                     },
                   ),
