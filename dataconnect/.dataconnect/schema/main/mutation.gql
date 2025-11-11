@@ -1,0 +1,308 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Place` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  place_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Place_Data!
+  ): Place_KeyOutput! @fdc_generated(from: "Place", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Route` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  route_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Route_Data!
+  ): Route_KeyOutput! @fdc_generated(from: "Route", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `User` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Place` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  place_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Place_Data!]!
+  ): [Place_KeyOutput!]! @fdc_generated(from: "Place", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Route` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  route_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Route_Data!]!
+  ): [Route_KeyOutput!]! @fdc_generated(from: "Route", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `User` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Place` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Place`.
+  """
+  place_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Place_Data!
+  ): Place_KeyOutput! @fdc_generated(from: "Place", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Route` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Route`.
+  """
+  route_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Route_Data!
+  ): Route_KeyOutput! @fdc_generated(from: "Route", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `User` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Place` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Place`.
+  """
+  place_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Place_Data!]!
+  ): [Place_KeyOutput!]! @fdc_generated(from: "Place", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Route` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Route`.
+  """
+  route_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Route_Data!]!
+  ): [Route_KeyOutput!]! @fdc_generated(from: "Route", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `User` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Place` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Place` or `null` if not found.
+  """
+  place_update(
+    """
+    The key used to identify the object.
+    """
+    key: Place_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Place_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Place_Data!
+  ): Place_KeyOutput @fdc_generated(from: "Place", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Route` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Route` or `null` if not found.
+  """
+  route_update(
+    """
+    The key used to identify the object.
+    """
+    key: Route_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Route_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Route_Data!
+  ): Route_KeyOutput @fdc_generated(from: "Route", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `User` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `User` or `null` if not found.
+  """
+  user_update(
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: User_Data!
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Place` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  place_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Place_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Place_Data!
+  ): Int! @fdc_generated(from: "Place", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Route` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  route_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Route_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Route_Data!
+  ): Int! @fdc_generated(from: "Route", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `User` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  user_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: User_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: User_Data!
+  ): Int! @fdc_generated(from: "User", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Place` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  place_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Place_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Place_FirstRow
+  ): Place_KeyOutput @fdc_generated(from: "Place", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Route` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  route_delete(
+    """
+    The key used to identify the object.
+    """
+    key: Route_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Route_FirstRow
+  ): Route_KeyOutput @fdc_generated(from: "Route", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `User` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  user_delete(
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Place` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  place_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Place_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Place", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Route` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  route_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Route_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Route", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `User` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  user_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: User_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "User", purpose: DELETE_MULTIPLE)
+}

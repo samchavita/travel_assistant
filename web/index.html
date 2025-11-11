@@ -37,6 +37,29 @@
 
 <body>
   <script src="flutter_bootstrap.js" async></script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBJMXkgC-z75W7mHW8yIDCkX0QQMAQjaA",
+      authDomain: "travel-assistant-ab988.firebaseapp.com",
+      projectId: "travel-assistant-ab988",
+      storageBucket: "travel-assistant-ab988.firebasestorage.app",
+      messagingSenderId: "146853878699",
+      appId: "1:146853878699:web:c154a3c6b30f312d9190ee",
+      measurementId: "G-S6GWGKTMGN"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 </body>
 
 </html>

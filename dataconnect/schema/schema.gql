@@ -1,0 +1,33 @@
+# -----------------------------
+# USERS TABLE
+# -----------------------------
+type User @table(name: "users", singular: "user", key: ["userId"]) {
+  userId: UUID! @default(expr: "uuidV4()")
+  displayname: String! @unique
+  email: String! @unique
+  password: String!
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+# -----------------------------
+# PLACES TABLE
+# -----------------------------
+type Place @table(name: "places", singular: "place", key: ["placeId"]) {
+  placeId: UUID! @default(expr: "uuidV4()")
+  name: String!
+  description: String
+  coordinates: String!
+  images: [String!]
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+# -----------------------------
+# ROUTES TABLE
+# -----------------------------
+type Route @table(name: "routes", singular: "route", key: ["routeId"]) {
+  routeId: UUID! @default(expr: "uuidV4()")
+  userId: UUID!    # foreign key reference to users.user_id
+  name: String!
+  description: String
+  createdAt: Timestamp! @default(expr: "request.time")
+}

@@ -1,0 +1,125 @@
+# -----------------------------
+# USERS MUTATIONS
+# -----------------------------
+
+# Insert a new user
+mutation CreateUser($displayname: String!, $email: String!, $password: String!) {
+  user_insert_one(object: {displayname: $displayname, email: $email, password: $password}) {
+    user_id
+    displayname
+    email
+    created_at
+  }
+}
+
+# Update an existing user
+mutation UpdateUser($user_id: UUID!, $displayname: String, $email: String, $password: String) {
+  user_update_by_pk(pk_columns: {user_id: $user_id}, _set: {displayname: $displayname, email: $email, password: $password}) {
+    user_id
+    displayname
+    email
+  }
+}
+
+# Delete a user
+mutation DeleteUser($user_id: UUID!) {
+  user_delete_by_pk(user_id: $user_id) {
+    user_id
+  }
+}
+
+# -----------------------------
+# PLACES MUTATIONS
+# -----------------------------
+
+# Insert a new place
+mutation CreatePlace($name: String!, $description: String, $coordinates: String!, $images: [String!]) {
+  place_insert_one(object: {name: $name, description: $description, coordinates: $coordinates, images: $images}) {
+    place_id
+    name
+    description
+    coordinates
+    images
+    created_at
+  }
+}
+
+# Update a place
+mutation UpdatePlace($place_id: UUID!, $name: String, $description: String, $coordinates: String, $images: [String!]) {
+  place_update_by_pk(pk_columns: {place_id: $place_id}, _set: {name: $name, description: $description, coordinates: $coordinates, images: $images}) {
+    place_id
+    name
+    description
+  }
+}
+
+# Delete a place
+mutation DeletePlace($place_id: UUID!) {
+  place_delete_by_pk(place_id: $place_id) {
+    place_id
+  }
+}
+
+# -----------------------------
+# ROUTES MUTATIONS
+# -----------------------------
+
+# Insert a new route
+mutation CreateRoute($user_id: UUID!, $name: String!, $description: String) {
+  route_insert_one(object: {user_id: $user_id, name: $name, description: $description}) {
+    route_id
+    name
+    description
+    user_id
+    created_at
+  }
+}
+
+# Update a route
+mutation UpdateRoute($route_id: UUID!, $name: String, $description: String) {
+  route_update_by_pk(pk_columns: {route_id: $route_id}, _set: {name: $name, description: $description}) {
+    route_id
+    name
+    description
+  }
+}
+
+# Delete a route
+mutation DeleteRoute($route_id: UUID!) {
+  route_delete_by_pk(route_id: $route_id) {
+    route_id
+  }
+}
+
+# -----------------------------
+# ROUTE_PLACES MUTATIONS
+# -----------------------------
+
+# Insert a place into a route
+mutation CreateRoutePlace($route_id: UUID!, $place_id: UUID!, $order_index: Int!) {
+  route_place_insert_one(object: {route_id: $route_id, place_id: $place_id, order_index: $order_index}) {
+    route_place_id
+    route_id
+    place_id
+    order_index
+  }
+}
+
+# Update a route_place (e.g., change order_index)
+mutation UpdateRoutePlace($route_place_id: UUID!, $order_index: Int) {
+  route_place_update_by_pk(pk_columns: {route_place_id: $route_place_id}, _set: {order_index: $order_index}) {
+    route_place_id
+    route_id
+    place_id
+    order_index
+  }
+}
+
+# Delete a route_place
+mutation DeleteRoutePlace($route_place_id: UUID!) {
+  route_place_delete_by_pk(route_place_id: $route_place_id) {
+    route_place_id
+  }
+}
+
+# -----------------------------

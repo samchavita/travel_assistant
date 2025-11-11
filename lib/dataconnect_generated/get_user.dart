@@ -1,0 +1,139 @@
+part of 'generated.dart';
+
+class GetUserVariablesBuilder {
+  String userId;
+
+  final FirebaseDataConnect _dataConnect;
+  GetUserVariablesBuilder(this._dataConnect, {required  this.userId,});
+  Deserializer<GetUserData> dataDeserializer = (dynamic json)  => GetUserData.fromJson(jsonDecode(json));
+  Serializer<GetUserVariables> varsSerializer = (GetUserVariables vars) => jsonEncode(vars.toJson());
+  Future<QueryResult<GetUserData, GetUserVariables>> execute() {
+    return ref().execute();
+  }
+
+  QueryRef<GetUserData, GetUserVariables> ref() {
+    GetUserVariables vars= GetUserVariables(userId: userId,);
+    return _dataConnect.query("GetUser", dataDeserializer, varsSerializer, vars);
+  }
+}
+
+@immutable
+class GetUserUser {
+  final String userId;
+  final String displayname;
+  final String email;
+  final Timestamp createdAt;
+  GetUserUser.fromJson(dynamic json):
+  
+  userId = nativeFromJson<String>(json['userId']),
+  displayname = nativeFromJson<String>(json['displayname']),
+  email = nativeFromJson<String>(json['email']),
+  createdAt = Timestamp.fromJson(json['createdAt']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetUserUser otherTyped = other as GetUserUser;
+    return userId == otherTyped.userId && 
+    displayname == otherTyped.displayname && 
+    email == otherTyped.email && 
+    createdAt == otherTyped.createdAt;
+    
+  }
+  @override
+  int get hashCode => Object.hashAll([userId.hashCode, displayname.hashCode, email.hashCode, createdAt.hashCode]);
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['userId'] = nativeToJson<String>(userId);
+    json['displayname'] = nativeToJson<String>(displayname);
+    json['email'] = nativeToJson<String>(email);
+    json['createdAt'] = createdAt.toJson();
+    return json;
+  }
+
+  GetUserUser({
+    required this.userId,
+    required this.displayname,
+    required this.email,
+    required this.createdAt,
+  });
+}
+
+@immutable
+class GetUserData {
+  final GetUserUser? user;
+  GetUserData.fromJson(dynamic json):
+  
+  user = json['user'] == null ? null : GetUserUser.fromJson(json['user']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetUserData otherTyped = other as GetUserData;
+    return user == otherTyped.user;
+    
+  }
+  @override
+  int get hashCode => user.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    if (user != null) {
+      json['user'] = user!.toJson();
+    }
+    return json;
+  }
+
+  GetUserData({
+    this.user,
+  });
+}
+
+@immutable
+class GetUserVariables {
+  final String userId;
+  @Deprecated('fromJson is deprecated for Variable classes as they are no longer required for deserialization.')
+  GetUserVariables.fromJson(Map<String, dynamic> json):
+  
+  userId = nativeFromJson<String>(json['userId']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final GetUserVariables otherTyped = other as GetUserVariables;
+    return userId == otherTyped.userId;
+    
+  }
+  @override
+  int get hashCode => userId.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['userId'] = nativeToJson<String>(userId);
+    return json;
+  }
+
+  GetUserVariables({
+    required this.userId,
+  });
+}
+

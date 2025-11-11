@@ -1,0 +1,111 @@
+mutation @transaction {
+  # -----------------------------
+  # USERS
+  # -----------------------------
+  user_insertMany(
+    data: [
+      {
+        user_id: "550e8400-e29b-41d4-a716-000000000001",
+        displayname: "Ian Chavarria",
+        email: "ian@example.com",
+        password: "hashedpassword1"
+      },
+      {
+        user_id: "550e8400-e29b-41d4-a716-000000000002",
+        displayname: "Alice Johnson",
+        email: "alice@example.com",
+        password: "hashedpassword2"
+      },
+      {
+        user_id: "550e8400-e29b-41d4-a716-000000000003",
+        displayname: "Bob Smith",
+        email: "bob@example.com",
+        password: "hashedpassword3"
+      }
+    ]
+  )
+
+  # -----------------------------
+  # PLACES
+  # -----------------------------
+  place_insertMany(
+    data: [
+      {
+        place_id: "660e8400-e29b-41d4-a716-000000000001",
+        name: "Taipei 101",
+        description: "Famous skyscraper in Taipei",
+        coordinates: "25.033964,121.564468",
+        images: ["https://example.com/taipei101_1.jpg","https://example.com/taipei101_2.jpg"]
+      },
+      {
+        place_id: "660e8400-e29b-41d4-a716-000000000002",
+        name: "Shilin Night Market",
+        description: "Popular night market",
+        coordinates: "25.0880,121.5250",
+        images: ["https://example.com/shilin_1.jpg"]
+      },
+      {
+        place_id: "660e8400-e29b-41d4-a716-000000000003",
+        name: "Sun Moon Lake",
+        description: "Scenic lake in Taiwan",
+        coordinates: "23.8650,120.9186",
+        images: ["https://example.com/sunmoonlake_1.jpg"]
+      }
+    ]
+  )
+
+  # -----------------------------
+  # ROUTES
+  # -----------------------------
+  route_insertMany(
+    data: [
+      {
+        route_id: "770e8400-e29b-41d4-a716-000000000001",
+        user_id: "550e8400-e29b-41d4-a716-000000000001",
+        name: "Taipei Adventure",
+        description: "A one-day tour in Taipei"
+      },
+      {
+        route_id: "770e8400-e29b-41d4-a716-000000000002",
+        user_id: "550e8400-e29b-41d4-a716-000000000002",
+        name: "Northern Taiwan Trip",
+        description: "Visit northern attractions"
+      }
+    ]
+  )
+
+  # -----------------------------
+  # ROUTE_PLACES
+  # -----------------------------
+  route_place_insertMany(
+    data: [
+      # Taipei Adventure Route (Ian)
+      {
+        route_place_id: "880e8400-e29b-41d4-a716-000000000001",
+        route_id: "770e8400-e29b-41d4-a716-000000000001",
+        place_id: "660e8400-e29b-41d4-a716-000000000001",
+        order_index: 1
+      },
+      {
+        route_place_id: "880e8400-e29b-41d4-a716-000000000002",
+        route_id: "770e8400-e29b-41d4-a716-000000000001",
+        place_id: "660e8400-e29b-41d4-a716-000000000002",
+        order_index: 2
+      },
+
+      # Northern Taiwan Trip (Alice)
+      {
+        route_place_id: "880e8400-e29b-41d4-a716-000000000003",
+        route_id: "770e8400-e29b-41d4-a716-000000000002",
+        place_id: "660e8400-e29b-41d4-a716-000000000001",
+        order_index: 1
+      },
+      {
+        route_place_id: "880e8400-e29b-41d4-a716-000000000004",
+        route_id: "770e8400-e29b-41d4-a716-000000000002",
+        place_id: "660e8400-e29b-41d4-a716-000000000003",
+        order_index: 2
+      }
+    ]
+  )
+}

@@ -1,0 +1,71 @@
+# -----------------------------
+# USERS QUERIES
+# -----------------------------
+
+query ListUsers {
+  users {
+    userId
+    displayname
+    email
+    createdAt
+  }
+}
+
+query GetUser($userId: UUID!) {
+  user(key: { userId: $userId }) {
+    userId
+    displayname
+    email
+    createdAt
+  }
+}
+
+# -----------------------------
+# PLACES QUERIES
+# -----------------------------
+
+query ListPlaces {
+  places {
+    placeId
+    name
+    description
+    coordinates
+    images
+    createdAt
+  }
+}
+
+query GetPlace($placeId: UUID!) {
+  place(key: { placeId: $placeId }) {
+    placeId
+    name
+    description
+    coordinates
+    images
+    createdAt
+  }
+}
+
+# -----------------------------
+# ROUTES QUERIES
+# -----------------------------
+
+query ListRoutes {
+  routes {
+    routeId
+    name
+    description
+    userId
+    createdAt
+  }
+}
+
+query GetRoute($routeId: UUID!) {
+  route(key: { routeId: $routeId }) {
+    routeId
+    name
+    description
+    userId
+    createdAt
+  }
+}

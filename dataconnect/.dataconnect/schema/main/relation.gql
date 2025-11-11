@@ -1,0 +1,189 @@
+extend type Place {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Place", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Place` table.
+  """
+  _count: Int! @fdc_generated(from: "Place.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Place` table where the `coordinates` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  coordinates_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Place.coordinates", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Place` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Place.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Place` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Place.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Place` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Place.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Place` table where the `placeId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  placeId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Place.placeId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `Place` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Place.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Place` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Place.createdAt", purpose: QUERY_MAX)
+}
+extend type Route {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Route", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Route` table.
+  """
+  _count: Int! @fdc_generated(from: "Route.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Route` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Route.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Route` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Route.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Route` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Route.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Route` table where the `routeId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  routeId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Route.routeId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Route` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Route.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `Route` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Route.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Route` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Route.createdAt", purpose: QUERY_MAX)
+}
+extend type User {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "User", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `User` table.
+  """
+  _count: Int! @fdc_generated(from: "User.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `displayname` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  displayname_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.displayname", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `email` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  email_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.email", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `password` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  password_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.password", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `User` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "User.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `User` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "User.createdAt", purpose: QUERY_MAX)
+}

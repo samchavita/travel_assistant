@@ -1,0 +1,9 @@
+# dataconnect/seed_data.gql
+# Insert one user using the actual mutation field (user_insert).
+mutation CreateUser {
+  user_insert(data: {
+    displayname: "Alice Johnson"
+    email: "alice@example.com"
+    password: "password123"
+  })
+}

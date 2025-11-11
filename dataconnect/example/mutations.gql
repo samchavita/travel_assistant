@@ -1,0 +1,36 @@
+# -----------------------------
+# USERS MUTATIONS
+# -----------------------------
+
+mutation CreateUser($displayname: String!, $email: String!, $password: String!)
+  @auth(level: PUBLIC) {
+  user_insert(data: {displayname: $displayname, email: $email, password: $password})
+}
+
+mutation UpdateUser($userId: UUID!, $displayname: String, $email: String, $password: String)
+  @auth(level: PUBLIC) {
+  user_update(key: {userId: $userId}, data: {displayname: $displayname, email: $email, password: $password})
+}
+
+mutation DeleteUser($userId: UUID!)
+  @auth(level: PUBLIC) {
+  user_delete(key: {userId: $userId})
+}
+
+# -----------------------------
+# PLACES MUTATIONS
+# -----------------------------
+
+mutation CreatePlace($name: String!, $description: String, $coordinates: String!, $images: [String!])
+  @auth(level: PUBLIC) {
+  place_insert(data: {name: $name, description: $description, coordinates: $coordinates, images: $images})
+}
+
+# -----------------------------
+# ROUTES MUTATIONS
+# -----------------------------
+
+mutation CreateRoute($userId: UUID!, $name: String!, $description: String)
+  @auth(level: PUBLIC) {
+  route_insert(data: {userId: $userId, name: $name, description: $description})
+}

@@ -1,0 +1,71 @@
+# -----------------------------
+# USERS QUERIES
+# -----------------------------
+
+query ListUsers @auth(level: PUBLIC) {
+  users {
+    userId
+    displayname
+    email
+    createdAt
+  }
+}
+
+query GetUser($userId: UUID!) @auth(level: PUBLIC) {
+  user(key: { userId: $userId }) {
+    userId
+    displayname
+    email
+    createdAt
+  }
+}
+
+# -----------------------------
+# PLACES QUERIES
+# -----------------------------
+
+query ListPlaces @auth(level: PUBLIC) {
+  places {
+    placeId
+    name
+    description
+    coordinates
+    images
+    createdAt
+  }
+}
+
+query GetPlace($placeId: UUID!) @auth(level: PUBLIC) {
+  place(key: { placeId: $placeId }) {
+    placeId
+    name
+    description
+    coordinates
+    images
+    createdAt
+  }
+}
+
+# -----------------------------
+# ROUTES QUERIES
+# -----------------------------
+
+query ListRoutes @auth(level: PUBLIC) {
+  routes {
+    routeId
+    name
+    description
+    userId
+    createdAt
+  }
+}
+
+query GetRoute($routeId: UUID!) @auth(level: PUBLIC) {
+  route(key: { routeId: $routeId }) {
+    routeId
+    name
+    description
+    userId
+    createdAt
+  }
+}

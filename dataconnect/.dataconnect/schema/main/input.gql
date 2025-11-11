@@ -1,0 +1,747 @@
+"""
+✨ `Place_KeyOutput` returns the primary key fields of table type `Place`.
+
+It has the same format as `Place_Key`, but is only used as mutation return value.
+"""
+scalar Place_KeyOutput
+"""
+✨ `Route_KeyOutput` returns the primary key fields of table type `Route`.
+
+It has the same format as `Route_Key`, but is only used as mutation return value.
+"""
+scalar Route_KeyOutput
+"""
+✨ `User_KeyOutput` returns the primary key fields of table type `User`.
+
+It has the same format as `User_Key`, but is only used as mutation return value.
+"""
+scalar User_KeyOutput
+"""
+✨ Generated data input type for table 'Place'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Place_Data {
+  """
+  ✨ Generated from Field `Place`.`placeId` of type `UUID!`
+  """
+  placeId: UUID
+  """
+  ✨ `_expr` server value variant of `placeId` (✨ Generated from Field `Place`.`placeId` of type `UUID!`)
+  """
+  placeId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Place`.`coordinates` of type `String!`
+  """
+  coordinates: String
+  """
+  ✨ `_expr` server value variant of `coordinates` (✨ Generated from Field `Place`.`coordinates` of type `String!`)
+  """
+  coordinates_expr: String_Expr
+  """
+  ✨ Generated from Field `Place`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Place`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Place`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Place`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Place`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Place`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
+  ✨ Generated from Field `Place`.`images` of type `[String!]`
+  """
+  images: [String!]
+  """
+  ✨ `_update` server value variant of `images` (✨ Generated from Field `Place`.`images` of type `[String!]`)
+  """
+  images_update: [String_ListUpdate!]
+  """
+  ✨ Generated from Field `Place`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Place`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'Place'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Place_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Place_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Place_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Place_Filter!]
+  """
+  ✨ Generated from Field `Place`.`placeId` of type `UUID!`
+  """
+  placeId: UUID_Filter
+  """
+  ✨ Generated from Field `Place`.`coordinates` of type `String!`
+  """
+  coordinates: String_Filter
+  """
+  ✨ Generated from Field `Place`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Place`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Place`.`images` of type `[String!]`
+  """
+  images: String_ListFilter
+  """
+  ✨ Generated from Field `Place`.`name` of type `String!`
+  """
+  name: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'Place'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Place_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Place_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Place_Filter
+}
+"""
+✨ Generated having input type for table 'Place'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Place_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Place_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Place_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Place_Having!]
+  """
+  ✨ Generated from Field `Place`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Place`.`coordinates_count` of type `Int!`
+  """
+  coordinates_count: Int_Filter
+  """
+  ✨ Generated from Field `Place`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Place`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Place`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Place`.`placeId_count` of type `Int!`
+  """
+  placeId_count: Int_Filter
+  """
+  ✨ Generated from Field `Place`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Place`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Place'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Place_Key {
+  """
+  ✨ Generated from Field `Place`.`placeId` of type `UUID!`
+  """
+  placeId: UUID
+  """
+  ✨ `_expr` server value variant of `placeId` (✨ Generated from Field `Place`.`placeId` of type `UUID!`)
+  """
+  placeId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Place'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Place_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Place_Filter
+}
+"""
+✨ Generated order input type for table 'Place'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Place_Order {
+  """
+  ✨ Generated from Field `Place`.`placeId` of type `UUID!`
+  """
+  placeId: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`coordinates` of type `String!`
+  """
+  coordinates: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`coordinates_count` of type `Int!`
+  """
+  coordinates_count: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`placeId_count` of type `Int!`
+  """
+  placeId_count: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Place`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Route'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Route_Data {
+  """
+  ✨ Generated from Field `Route`.`routeId` of type `UUID!`
+  """
+  routeId: UUID
+  """
+  ✨ `_expr` server value variant of `routeId` (✨ Generated from Field `Route`.`routeId` of type `UUID!`)
+  """
+  routeId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Route`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Route`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Route`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Route`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Route`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Route`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
+  ✨ Generated from Field `Route`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Route`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `Route`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Route`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr
+}
+"""
+✨ Generated filter input type for table 'Route'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Route_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Route_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Route_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Route_Filter!]
+  """
+  ✨ Generated from Field `Route`.`routeId` of type `UUID!`
+  """
+  routeId: UUID_Filter
+  """
+  ✨ Generated from Field `Route`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Route`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Route`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Route`.`userId` of type `UUID!`
+  """
+  userId: UUID_Filter
+}
+"""
+✨ Generated first-row input type for table 'Route'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Route_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Route_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Route_Filter
+}
+"""
+✨ Generated having input type for table 'Route'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Route_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Route_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Route_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Route_Having!]
+  """
+  ✨ Generated from Field `Route`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Route`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Route`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Route`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Route`.`routeId_count` of type `Int!`
+  """
+  routeId_count: Int_Filter
+  """
+  ✨ Generated from Field `Route`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `Route`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Route`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Route'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Route_Key {
+  """
+  ✨ Generated from Field `Route`.`routeId` of type `UUID!`
+  """
+  routeId: UUID
+  """
+  ✨ `_expr` server value variant of `routeId` (✨ Generated from Field `Route`.`routeId` of type `UUID!`)
+  """
+  routeId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Route'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Route_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Route_Filter
+}
+"""
+✨ Generated order input type for table 'Route'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Route_Order {
+  """
+  ✨ Generated from Field `Route`.`routeId` of type `UUID!`
+  """
+  routeId: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`userId` of type `UUID!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`routeId_count` of type `Int!`
+  """
+  routeId_count: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Route`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'User'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input User_Data {
+  """
+  ✨ Generated from Field `User`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `User`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `User`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `User`.`displayname` of type `String!`
+  """
+  displayname: String
+  """
+  ✨ `_expr` server value variant of `displayname` (✨ Generated from Field `User`.`displayname` of type `String!`)
+  """
+  displayname_expr: String_Expr
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: String
+  """
+  ✨ `_expr` server value variant of `email` (✨ Generated from Field `User`.`email` of type `String!`)
+  """
+  email_expr: String_Expr
+  """
+  ✨ Generated from Field `User`.`password` of type `String!`
+  """
+  password: String
+  """
+  ✨ `_expr` server value variant of `password` (✨ Generated from Field `User`.`password` of type `String!`)
+  """
+  password_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'User'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input User_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [User_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: User_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [User_Filter!]
+  """
+  ✨ Generated from Field `User`.`userId` of type `UUID!`
+  """
+  userId: UUID_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`displayname` of type `String!`
+  """
+  displayname: String_Filter
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: String_Filter
+  """
+  ✨ Generated from Field `User`.`password` of type `String!`
+  """
+  password: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'User'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input User_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [User_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: User_Filter
+}
+"""
+✨ Generated having input type for table 'User'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input User_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [User_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: User_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [User_Having!]
+  """
+  ✨ Generated from Field `User`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`displayname_count` of type `Int!`
+  """
+  displayname_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`email_count` of type `Int!`
+  """
+  email_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`password_count` of type `Int!`
+  """
+  password_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'User'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input User_Key {
+  """
+  ✨ Generated from Field `User`.`userId` of type `UUID!`
+  """
+  userId: UUID
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `User`.`userId` of type `UUID!`)
+  """
+  userId_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'User'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input User_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: User_Filter
+}
+"""
+✨ Generated order input type for table 'User'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input User_Order {
+  """
+  ✨ Generated from Field `User`.`userId` of type `UUID!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `User`.`displayname` of type `String!`
+  """
+  displayname: OrderDirection
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: OrderDirection
+  """
+  ✨ Generated from Field `User`.`password` of type `String!`
+  """
+  password: OrderDirection
+  """
+  ✨ Generated from Field `User`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`displayname_count` of type `Int!`
+  """
+  displayname_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`email_count` of type `Int!`
+  """
+  email_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`password_count` of type `Int!`
+  """
+  password_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}

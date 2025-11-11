@@ -1,0 +1,47 @@
+# -----------------------------
+# USERS TABLE
+# -----------------------------
+type User @table(name: "users", singular: "user", key: ["user_id"]) {
+  user_id: UUID! @default(expr: "uuidV4()")
+  displayname: String! @unique
+  email: String! @unique
+  password: String! # Ideally store hashed passwords
+  created_at: Timestamp! @default(expr: "request.time")
+}
+
+# -----------------------------
+# PLACES TABLE
+# -----------------------------
+type Place @table(name: "places", singular: "place", key: ["place_id"]) {
+  place_id: UUID! @default(expr: "uuidV4()")
+  name: String!
+  description: String
+  coordinates: String! # e.g., "lat,lng" or GeoJSON
+  images: [String!]   # Array of image URLs
+  created_at: Timestamp! @default(expr: "request.time")
+}
+
+# -----------------------------
+# ROUTES TABLE
+# -----------------------------
+type Route @table(name: "routes", singular: "route", key: ["route_id"]) {
+  route_id: UUID! @default(expr: "uuidV4()")
+  user: User! @relation(field: "user_id") # Foreign key to User
+  user_id: UUID!
+  name: String!
+  description: String
+  created_at: Timestamp! @default(expr: "request.time")
+}
+
+# -----------------------------
+# ROUTE_PLACE TABLE (many-to-many)
+# -----------------------------
+type RoutePlace @table(name: "route_places", singular: "route_place", key: ["route_place_id"]) {
+  route_place_id: UUID! @default(expr: "uuidV4()")
+  route: Route! @relation(field: "route_id") # Foreign key to Route
+  route_id: UUID!
+  place: Place! @relation(field: "place_id") # Foreign key to Place
+  place_id: UUID!
+  order_index: Int! # order of place in the route
+  created_at: Timestamp! @default(expr: "request.time")
+}

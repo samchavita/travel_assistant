@@ -4,38 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'login_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+// import 'package:firebase_data_connect/firebase_data_connect.dart';
 
-// Adjust the path as needed
-// import 'dart:io';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-// import 'package:hive/hive_registrar.g.dart';
-// import 'package:hive_ce/hive.dart';
-// import 'package:meta/meta.dart';
-
-// @immutable
-// class User {
-//   const User({
-//     required this.username,
-//     required this.email,
-//   });
-
-//   final String username;
-//   final String email;
-
-//   @override
-//   String toString() {
-//     return '$username: $email';
-//   }
-// }
-
-
-void main() {
   runApp(
     // 1. ProviderScope must be the outermost widget
-    ProviderScope(
-      child: const WelcomePage(),
-    ),
+    ProviderScope(child: const WelcomePage()),
   );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: WelcomePage());
+  }
 }
 
 class WelcomePage extends StatelessWidget {
@@ -70,12 +58,6 @@ class LandingPage extends StatelessWidget {
           // add a video in the background here that will play on loop covering the entire screen
           // VideoPlayerWidget(),
           VideoPlayerScreen(),
-          // Image.asset(
-          //   'assets/images/flower.jpg',
-          //   fit: BoxFit.cover,
-          //   height: double.infinity,
-          //   width: double.infinity,
-          // ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
@@ -105,7 +87,7 @@ class LandingPage extends StatelessWidget {
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {
-                        print('Getting Started');
+                        // print('Getting Started');
 
                         Navigator.push(
                           context,
