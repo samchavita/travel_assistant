@@ -60,6 +60,10 @@ extend type Place {
   ✨ Maximum of the `createdAt` field in the `Place` table.
   """
   createdAt_max: Timestamp @fdc_generated(from: "Place.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Place.placeId", purpose: GLOBAL_ID)
 }
 extend type Route {
   """
@@ -123,6 +127,10 @@ extend type Route {
   ✨ Maximum of the `createdAt` field in the `Route` table.
   """
   createdAt_max: Timestamp @fdc_generated(from: "Route.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Route.routeId", purpose: GLOBAL_ID)
 }
 extend type User {
   """
@@ -186,4 +194,8 @@ extend type User {
   ✨ Maximum of the `createdAt` field in the `User` table.
   """
   createdAt_max: Timestamp @fdc_generated(from: "User.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "User.userId", purpose: GLOBAL_ID)
 }

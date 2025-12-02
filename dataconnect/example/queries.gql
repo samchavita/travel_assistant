@@ -1,3 +1,5 @@
+# $ firebase deploy --only dataconnect # after adding new queries
+
 # -----------------------------
 # USERS QUERIES
 # -----------------------------
@@ -16,6 +18,26 @@ query GetUser($userId: UUID!) @auth(level: PUBLIC) {
     userId
     displayname
     email
+    createdAt
+  }
+}
+
+query GetUserByEmail($email: String!) @auth(level: PUBLIC) {
+  users(where: {email: {eq: $email}}) {
+    userId
+    email
+    password
+    displayname
+    createdAt
+  }
+}
+
+query GetUserByDisplayname($displayname: String!) @auth(level: PUBLIC) {
+  users(where: {displayname: {eq: $displayname}}) {
+    userId
+    email
+    password
+    displayname
     createdAt
   }
 }

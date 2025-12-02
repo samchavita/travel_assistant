@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dbcrypt/dbcrypt.dart';
 import 'dataconnect_generated/generated.dart';
+import 'main_navigation.dart';
 // import 'your_database_connector.dart'; // Uncomment when integrating
 
 // class SignUpPage extends StatefulWidget {
@@ -41,7 +42,7 @@ class SignUpPageState extends State<SignUpPage> {
 
   bool loading = false;
 
-  // ✅ Username validation
+  //  Username validation
   String? validateUsername(String value) {
     final regex = RegExp(r'^[a-zA-Z]+$');
     if (value.isEmpty) return 'Username is required';
@@ -144,8 +145,16 @@ class SignUpPageState extends State<SignUpPage> {
       setState(() => loading = false);
 
       if (context.mounted) {
+
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainNavigation(),
+            ),
+            (Route<dynamic> route) => false, // This predicate ensures all previous routes are removed
+          );
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created! Please log in.')),
+          const SnackBar(content: Text('Account created!')),
         );
       }
     } catch (e) {

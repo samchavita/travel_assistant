@@ -1,4 +1,4 @@
-library generated.dart;
+library dataconnect_generated;
 import 'package:firebase_data_connect/firebase_data_connect.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -16,6 +16,10 @@ part 'create_route.dart';
 part 'list_users.dart';
 
 part 'get_user.dart';
+
+part 'get_user_by_email.dart';
+
+part 'get_user_by_displayname.dart';
 
 part 'list_places.dart';
 
@@ -69,6 +73,16 @@ class ExampleConnector {
   }
   
   
+  GetUserByEmailVariablesBuilder getUserByEmail ({required String email, }) {
+    return GetUserByEmailVariablesBuilder(dataConnect, email: email,);
+  }
+  
+  
+  GetUserByDisplaynameVariablesBuilder getUserByDisplayname ({required String displayname, }) {
+    return GetUserByDisplaynameVariablesBuilder(dataConnect, displayname: displayname,);
+  }
+  
+  
   ListPlacesVariablesBuilder listPlaces () {
     return ListPlacesVariablesBuilder(dataConnect, );
   }
@@ -105,4 +119,3 @@ class ExampleConnector {
 
   FirebaseDataConnect dataConnect;
 }
-

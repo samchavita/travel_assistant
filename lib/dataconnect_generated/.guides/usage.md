@@ -8,9 +8,9 @@ ExampleConnector.instance.CreatePlace(createPlaceVariables).execute();
 ExampleConnector.instance.CreateRoute(createRouteVariables).execute();
 ExampleConnector.instance.ListUsers().execute();
 ExampleConnector.instance.GetUser(getUserVariables).execute();
+ExampleConnector.instance.GetUserByEmail(getUserByEmailVariables).execute();
+ExampleConnector.instance.GetUserByDisplayname(getUserByDisplaynameVariables).execute();
 ExampleConnector.instance.ListPlaces().execute();
-ExampleConnector.instance.GetPlace(getPlaceVariables).execute();
-ExampleConnector.instance.ListRoutes().execute();
 
 ```
 

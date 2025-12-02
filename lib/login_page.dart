@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'main_navigation.dart';
 // import 'dataconnect_generated/generated.dart';
 import 'signup.dart';
+import 'dataconnect_generated/generated.dart';
+import 'package:dbcrypt/dbcrypt.dart';
 
 // LOG IN PAGE
 class LoginPage extends StatefulWidget {
@@ -16,8 +18,9 @@ class LoginPage extends StatefulWidget {
 class LoginState extends State<LoginPage> {
   bool _isChecked = false;
 
-  final _unameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +76,7 @@ class LoginState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: TextField(
-                  controller: _unameController,
+                  controller: _emailController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -81,8 +84,8 @@ class LoginState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(60.0),
                       borderSide: BorderSide(color: Colors.white, width: 2.0),
                     ),
-                    labelText: 'username',
-                    hintText: 'Lin',
+                    labelText: 'email',
+                    hintText: 'example@mail.com',
                   ),
                 ),
               ),
@@ -195,20 +198,11 @@ class LoginState extends State<LoginPage> {
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.teal,
                     ),
-                    child: Text('Log in ', style: TextStyle(fontSize: 20)),
-                    onPressed: () async {
-                      print('Attempting to log in');
-
-                      final success = await _logIn();
-                      if (success) {
-                        print('Successs');
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MainNavigation(),
-                          ),
-                        );
-                      }
+                    child: _isLoading 
+                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white))
+                      : const Text('Log in ', style: TextStyle(fontSize: 20)),
+                    onPressed: _isLoading ? null : () async {
+                      await _handleLogin();
                     },
                   ),
                 ),
@@ -237,270 +231,94 @@ class LoginState extends State<LoginPage> {
     );
   }
 
-  Future<bool> _logIn() async {
-    return true;
+  // Future<bool> _logIn() async {
+  //   return true;
+  // }
+
+  Future<void> _handleLogin() async {
+    setState(() => _isLoading = true);
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Basic validation
+    if (email.isEmpty || password.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fill in all fields')),
+        );
+      }
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    try {
+      // 1. CALL DATA CONNECT
+      // Uses the singleton 'ExampleConnector.instance' from your snippet.
+      // We call .execute() because the method returns a VariablesBuilder.
+      final response = await ExampleConnector.instance.getUserByEmail(email: email).execute();
+
+      // 2. CHECK RESULTS
+      // The 'response.data' usually contains the typed results of the query.
+      if (response.data.users.isEmpty) {
+        print('No user found with that email.');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User not found')),
+          );
+        }
+        return;
+      }
+
+      final user = response.data.users.first;
+      final bcrypt = DBCrypt();
+
+      // 3. VERIFY PASSWORD
+      // Note: In production, compare hashed passwords (e.g., BCrypt), not plain text.
+
+      if (bcrypt.checkpw(password, user.password)) {
+        print('Login Success: ${user.displayname}');
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainNavigation(),
+            ),
+            (Route<dynamic> route) => false, // This predicate ensures all previous routes are removed
+          );
+
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => MainNavigation(),
+          //   ),
+          // );
+        }
+      } else {
+        print('Incorrect password');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Incorrect password')),
+          );
+        }
+      }
+    } catch (e) {
+      print('Login Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          // SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('Something went wrong. Please try again.')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
+
 }
 
-// // SIGN UP PAGE
-// class SignUpPage extends StatefulWidget {
-//   const SignUpPage({super.key});
-
-//   @override
-//   SignUpState createState() => SignUpState();
-// }
-
-// class SignUpState extends State<SignUpPage> {
-//   final _usernameController = TextEditingController();
-//   final _emailController = TextEditingController();
-//   final _passwordController = TextEditingController();
-//   final _confirmPasswordController = TextEditingController();
-
-//   String? status;
-//   bool loading = false;
-
-//   Future<void> createUser() async {
-//     // ✅ Get the generated instance
-//     final connector = ExampleConnector.instance;
-
-//     final bcrypt = DBCrypt();
-//     final p = bcrypt.hashpw(_passwordController.text.trim(), bcrypt.gensalt());
-
-//     String validatePassword(String password) {
-//       // Regular expressions for each criterion
-//       final hasUppercase = RegExp(r'[A-Z]');
-//       final hasLowercase = RegExp(r'[a-z]');
-//       final hasDigits = RegExp(r'\d');
-//       final hasSpecialCharacters = RegExp(r'[!@#$%^&*(),.?":{}|<>]');
-//       final isLongEnough = password.length > 8;
-
-//       // Check each condition
-//       if (RegExp(r'[A-Z]').hasMatch(password){
-//         return "Password must contain at least an uppercase letter.";
-//       }
-//       else if (RegExp(r'[a-z]').hasMatch(password)){
-//         return "Password must contain at least a lowercase letter.";
-//       }
-//       else if (RegExp(r'\d').hasMatch(password))){
-//         return "Password must contain at least a number.";
-//       }
-//       else if (RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password)){
-//         return "Password must at least one special character.";
-//       }
-//       else if (password.length > 8){
-//         return "Password must be at least 8 characters long.";
-//       }
-//       return "ok";
-//     }
-
-//     // check if username or email already exists in the database
-
-//     // ✅ Call the mutation using the generated method
-//     final result = await connector
-//         .createUser(
-//           displayname: _usernameController.text.trim(),
-//           email: _emailController.text.trim(),
-//           password: _passwordController.text.trim(),
-//         )
-//         .execute();
-
-//     // ✅ Access the returned data
-//     print('Created user ID: ${result.data?.user_insert.userId}');
-//   }
-
-  // import 'package:travel_app/database.dart';
-  // import 'package:drift/src/runtime/data_class.dart';
-  // import 'package:dbcrypt/dbcrypt.dart';
-
-  //   WidgetsFlutterBinding.ensureInitialized();
-
-  //   final database = AppDatabase();
-
-  //   final bcrypt = DBCrypt();
-  //   final hashedPassword = bcrypt.hashpw('something', bcrypt.gensalt());
-  //   await database
-  //       .into(database.users)
-  //       .insert(
-  //         UsersCompanion.insert(
-  //           username: Value('samuel'),
-  //           email: Value('me@ndhu.com'),
-  //           passwordHash: hashedPassword,
-  //         ),
-  //       );
-  //   List<User> allItems = await database.select(database.users).get();
-
-  //   print('items in database: $allItems');
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.blueGrey.shade50,
-//       appBar: AppBar(title: Text("Sign up")),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(40.0),
-//           child: Column(
-//             children: <Widget>[
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 110.0),
-//                 child: Center(
-//                   child: Container(
-//                     width: 200,
-//                     height: 100,
-//                     decoration: BoxDecoration(
-//                       // color: Colors.red,
-//                       borderRadius: BorderRadius.circular(50.0),
-//                     ),
-//                     child: Image.asset('assets/images/pheasant.png'),
-//                   ),
-//                 ),
-//               ),
-
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 15, bottom: 0),
-//                 child: Center(
-//                   child: Text(
-//                     'Create a new account to get started and use our features!',
-//                     style: TextStyle(
-//                       fontStyle: FontStyle.italic,
-//                       fontSize: 16,
-//                       color: Colors.grey,
-//                     ),
-//                     textAlign: TextAlign.center,
-
-//                     // decoration: InputDecoration(
-//                     //   filled: true,
-//                     //   fillColor: Colors.white,
-//                     //   enabledBorder: OutlineInputBorder(
-//                     //     borderRadius: BorderRadius.circular(60.0),
-//                     //     borderSide: BorderSide(color: Colors.white, width: 2.0),
-//                     //   ),
-//                     //   labelText: 'Email',
-//                     //   hintText: 'example@gmail.com',
-//                     // ),
-//                   ),
-//                 ),
-//               ),
-
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 15, bottom: 0),
-//                 child: TextField(
-//                   controller: _usernameController,
-//                   decoration: InputDecoration(
-//                     filled: true,
-//                     fillColor: Colors.white,
-//                     enabledBorder: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(60.0),
-//                       borderSide: BorderSide(color: Colors.white, width: 2.0),
-//                     ),
-//                     labelText: 'Username',
-//                     hintText: 'Lin',
-//                   ),
-//                 ),
-//               ),
-
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 15, bottom: 0),
-//                 child: TextField(
-//                   controller: _emailController,
-//                   decoration: InputDecoration(
-//                     filled: true,
-//                     fillColor: Colors.white,
-//                     enabledBorder: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(60.0),
-//                       borderSide: BorderSide(color: Colors.white, width: 2.0),
-//                     ),
-//                     labelText: 'Email',
-//                     hintText: 'example@gmail.com',
-//                   ),
-//                 ),
-//               ),
-
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 15, bottom: 0),
-//                 child: TextField(
-//                   controller: _passwordController,
-//                   obscureText: true,
-//                   decoration: InputDecoration(
-//                     filled: true,
-//                     fillColor: Colors.white,
-//                     enabledBorder: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(60.0),
-//                       borderSide: BorderSide(color: Colors.white, width: 2.0),
-//                     ),
-//                     labelText: 'Password',
-//                     hintText: 'Enter secure password',
-//                   ),
-//                 ),
-//               ),
-
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 15, bottom: 0),
-//                 child: TextField(
-//                   controller: _confirmPasswordController,
-//                   obscureText: true,
-//                   decoration: InputDecoration(
-//                     filled: true,
-//                     fillColor: Colors.white,
-//                     enabledBorder: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(60.0),
-//                       borderSide: BorderSide(color: Colors.white, width: 2.0),
-//                     ),
-//                     labelText: 'Confirm Password',
-//                     hintText: 'Enter secure password',
-//                   ),
-//                 ),
-//               ),
-
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 30, bottom: 0),
-//                 child: SizedBox(
-//                   height: 45,
-//                   width: double.infinity,
-//                   child: ElevatedButton(
-//                     style: ElevatedButton.styleFrom(
-//                       foregroundColor: Colors.white,
-//                       backgroundColor: Colors.teal,
-//                     ),
-//                     child: Text('Sign up', style: TextStyle(fontSize: 20)),
-//                     onPressed: () {
-//                       print('Successfully log in ');
-//                       _registerUser;
-//                       Navigator.pushReplacement(
-//                         context,
-//                         MaterialPageRoute(builder: (context) => Dashboard()),
-//                       );
-//                     },
-//                   ),
-//                 ),
-//               ),
-
-//               SizedBox(height: 40),
-
-//               // Center(
-//               //   child:
-//               //       InkWell(
-//               //         onTap: () {
-//               //           print('hello');
-//               //         },
-//               //         child: Text(
-//               //           'or sign up instead',
-//               //           style: TextStyle(fontSize: 14, color: Colors.teal),
-//               //         ),
-//               //       ),
-//               //       // ),
-//               // ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Future<void> _registerUser() async {
-//     return;
-//   }
-// }
 
 // FORGOT PASSWORD PAGE
 class ForgotPwdPage extends StatefulWidget {
