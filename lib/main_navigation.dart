@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dashboard.dart';
 import 'trips_page.dart';
 import 'chatbot.dart';
+
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
