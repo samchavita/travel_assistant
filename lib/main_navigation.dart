@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dashboard.dart';
 import 'trips_page.dart';
 import 'chatbot.dart';
+import 'maps.dart';
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
@@ -16,6 +17,7 @@ class _MainNavigationState extends State<MainNavigation> {
   late final List<Widget> _pages = [
     const Dashboard(),
     const TripsPage(),
+    const AddItineraryStopPage(),
     const ChatbotApp(),
     // const SettingsPage(),
   ];
@@ -131,6 +133,7 @@ class _MainNavigationState extends State<MainNavigation> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Plan"),
+          BottomNavigationBarItem(icon: Icon(Icons.gps_fixed), label: "Map"),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: "GuideBook"),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
         ],
