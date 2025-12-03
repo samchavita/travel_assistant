@@ -1,21 +1,10 @@
-import 'dart:convert'; // For JSON encoding/decoding
-import 'dart:io'; // To detect platform for localhost
-import 'package:flutter/foundation.dart'; // To detect web
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; // HTTP requests
-import 'package:uuid/uuid.dart'; // For Session ID generation
 
 // --- Custom Colors ---
-const Color kGreenAccent = Colors.teal;
+const Color kGreenAccent = Color(0xFF1CB954);
 const Color kLightGrey = Color(0xFFF0F0F0);
 const Color kBotBubbleColor = Color(0xFFE0E0E0);
-const Color kUserBubbleColor = Colors.teal;
-
-// --- Configuration (Mirrors chat-widget.js Config) ---
-// If testing on Android Emulator, use 'http://10.0.2.2:5454/webhook'
-// If testing on iOS Simulator or Web, use 'http://localhost:5454/webhook'
-const String kBaseUrl = 'http://localhost:1234/webhook/'; 
-const String kRoute = 'general';
+const Color kUserBubbleColor = Color(0xFF1CB954);
 
 void main() {
   runApp(const ChatbotApp());
@@ -59,101 +48,35 @@ class _ChatbotInputScreenState extends State<ChatbotInputScreen> {
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  // Session Management
-  late String _sessionId;
-
-  @override
-  void initState() {
-    super.initState();
-    // Generate a unique session ID on startup, similar to JS `crypto.randomUUID()`
-    _sessionId = const Uuid().v4();
-  }
-
   // Handle sending a message
   void _handleSubmitted(String text) {
     if (text.trim().isEmpty) return; // Don't send empty messages
 
     _textController.clear(); // Clear input field
 
-    // 1. Add User Message to UI immediately
     setState(() {
       _messages.add({'text': text.trim(), 'isUser': true});
     });
     
     _scrollToBottom();
 
-    // 2. Send to Backend
-    _sendMessageToBackend(text.trim());
+    // Simulate Bot Response
+    _simulateBotResponse(text);
   }
 
-  // Implements the specific JSON payload structure from chat-widget.js
-  Future<void> _sendMessageToBackend(String userQuery) async {
-    // Correct localhost for Android Emulator if needed
-    String urlString = kBaseUrl;
-    if (!kIsWeb && Platform.isAndroid && kBaseUrl.contains('localhost')) {
-      urlString = kBaseUrl.replaceFirst('localhost', '10.0.2.2');
-    }
-
-    final Uri url = Uri.parse(urlString);
-
-    // Construct Payload mirroring chat-widget.js `sendMessage` function
-    final Map<String, dynamic> payload = {
-      "action": "sendMessage",
-      "sessionId": _sessionId,
-      "route": kRoute,
-      "chatInput": userQuery,
-      "metadata": {
-        "userId": "" // Empty as per JS example
-      }
-    };
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(payload),
-      );
-
-      if (response.statusCode == 200) {
-        final dynamic data = jsonDecode(response.body);
-        
-        // Handle response format: JS handles both Array and Object
-        // logic: Array.isArray(data) ? data[0].output : data.output;
-        String botOutput = "No response text found.";
-        
-        if (data is List && data.isNotEmpty) {
-          botOutput = data[0]['output'] ?? "Empty response";
-        } else if (data is Map<String, dynamic>) {
-          botOutput = data['output'] ?? "Empty response";
-        }
-
-        if (mounted) {
-          setState(() {
-            _messages.add({
-              'text': botOutput,
-              'isUser': false
-            });
+  // Simulate a delay and a response from the bot
+  void _simulateBotResponse(String userQuery) {
+    Future.delayed(const Duration(seconds: 1, milliseconds: 500), () {
+      if (mounted) {
+        setState(() {
+          _messages.add({
+            'text': "I am a simulated bot. I received your message:\n\"$userQuery\"",
+            'isUser': false
           });
-          _scrollToBottom();
-        }
-      } else {
-        _handleError("Server error: ${response.statusCode}");
-      }
-    } catch (e) {
-      _handleError("Connection error: $e");
-    }
-  }
-
-  void _handleError(String errorMsg) {
-    if (mounted) {
-      setState(() {
-        _messages.add({
-          'text': "Error: Could not connect to bot.\n($errorMsg)",
-          'isUser': false
         });
-      });
-      _scrollToBottom();
-    }
+        _scrollToBottom();
+      }
+    });
   }
 
   void _scrollToBottom() {
@@ -236,7 +159,7 @@ class _ChatbotInputScreenState extends State<ChatbotInputScreen> {
           ),
           const SizedBox(height: 24),
           const Text(
-            'Note: The conversation is not saved locally, but maintains session ID.',
+            'Note: The conversation is not saved. Each session starts fresh.',
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -306,6 +229,16 @@ class BottomInputArea extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          const Padding(
+            padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
+            child: Text(
+              'How can we help you today?',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
           Container(
             decoration: BoxDecoration(
               color: kLightGrey.withOpacity(0.6),
@@ -315,19 +248,42 @@ class BottomInputArea extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end, // Align items to bottom for multiline growth
               children: [
+                // "Formal" Dropdown Look
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom: 8.0, left: 8.0),
+                //   child: Container(
+                //     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                //     decoration: BoxDecoration(
+                //       color: Colors.white,
+                //       borderRadius: BorderRadius.circular(10),
+                //       border: Border.all(color: Colors.grey.shade300),
+                //     ),
+                //     child: const Row(
+                //       children: [
+                //         Text('Formal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                //         Icon(Icons.keyboard_arrow_down, size: 20),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                
                 // Text Input
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: TextField(
                       controller: controller,
+                      // Changed: Set maxLines to null for unlimited lines (scrolling)
+                      // or set a specific number like 5
                       maxLines: null, 
                       minLines: 1,
                       keyboardType: TextInputType.multiline,
+                      // Changed: Use newline action so "Enter" creates a new line
                       textInputAction: TextInputAction.newline,
                       decoration: const InputDecoration(
                         hintText: 'Aa',
                         border: InputBorder.none,
+                        // Removed isDense/contentPadding strictness to allow better multiline layout
                         contentPadding: EdgeInsets.symmetric(vertical: 14.0), 
                       ),
                       style: const TextStyle(fontSize: 14),
@@ -341,6 +297,14 @@ class BottomInputArea extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Attachment Icons
+                      // IconButton(
+                      //   icon: const Icon(Icons.attach_file, color: Colors.grey),
+                      //   onPressed: () {},
+                      //   constraints: const BoxConstraints(),
+                      //   padding: const EdgeInsets.symmetric(horizontal: 4),
+                      // ),
+                      
                       // Explicit Send Button
                       Container(
                         margin: const EdgeInsets.only(right: 4.0),
