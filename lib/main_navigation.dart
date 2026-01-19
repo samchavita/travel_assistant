@@ -3,6 +3,7 @@ import 'dashboard.dart';
 import 'trips_page.dart';
 import 'chatbot.dart';
 import 'maps.dart';
+import 'settings.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -20,7 +21,7 @@ class _MainNavigationState extends State<MainNavigation> {
     const TripsPage(),
     const AddItineraryStopPage(),
     const ChatbotApp(),
-    // const SettingsPage(),
+    const ProfileMenuScreen(),
   ];
 
   final Set<int> _pagesWithHeader = {0, 1, 2}; 

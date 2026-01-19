@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'chatbot.dart';
 import 'main_navigation.dart';
+import 'settings.dart';
 // import 'package:firebase_data_connect/firebase_data_connect.dart';
 
 void main() async {
@@ -17,16 +18,8 @@ void main() async {
 
   runApp(
     // 1. ProviderScope must be the outermost widget
-    ProviderScope(child: const MyApp()),
+    ProviderScope(child: const WelcomePage()),
   );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: MainNavigation());
-  }
 }
 
 class WelcomePage extends StatelessWidget {
@@ -43,7 +36,7 @@ class WelcomePage extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      home: WelcomePage(),
+      home: LandingPage(),
     );
   }
 }
