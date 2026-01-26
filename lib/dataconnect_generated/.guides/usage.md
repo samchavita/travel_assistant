@@ -1,16 +1,16 @@
 # Basic Usage
 
 ```dart
+ExampleConnector.instance.CreateUser(createUserVariables).execute();
+ExampleConnector.instance.UpdateUser(updateUserVariables).execute();
+ExampleConnector.instance.DeleteUser(deleteUserVariables).execute();
+ExampleConnector.instance.CreatePlace(createPlaceVariables).execute();
+ExampleConnector.instance.CreateRoute(createRouteVariables).execute();
 ExampleConnector.instance.ListUsers().execute();
 ExampleConnector.instance.GetUser(getUserVariables).execute();
 ExampleConnector.instance.GetUserByEmail(getUserByEmailVariables).execute();
 ExampleConnector.instance.GetUserByDisplayname(getUserByDisplaynameVariables).execute();
 ExampleConnector.instance.ListPlaces().execute();
-ExampleConnector.instance.GetPlace(getPlaceVariables).execute();
-ExampleConnector.instance.ListRoutes().execute();
-ExampleConnector.instance.GetRoute(getRouteVariables).execute();
-ExampleConnector.instance.CreateUser(createUserVariables).execute();
-ExampleConnector.instance.UpdateUser(updateUserVariables).execute();
 
 ```
 
