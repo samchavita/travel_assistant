@@ -7,6 +7,9 @@ type User @table(name: "users", singular: "user", key: ["userId"]) {
   email: String! @unique
   password: String!
   createdAt: Timestamp! @default(expr: "request.time")
+  
+  sessionToken: String
+  sessionExpiry: Timestamp
 }
 
 # -----------------------------

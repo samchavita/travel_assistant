@@ -6,11 +6,11 @@ ExampleConnector.instance.UpdateUser(updateUserVariables).execute();
 ExampleConnector.instance.DeleteUser(deleteUserVariables).execute();
 ExampleConnector.instance.CreatePlace(createPlaceVariables).execute();
 ExampleConnector.instance.CreateRoute(createRouteVariables).execute();
+ExampleConnector.instance.UpdateUserSession(updateUserSessionVariables).execute();
 ExampleConnector.instance.ListUsers().execute();
 ExampleConnector.instance.GetUser(getUserVariables).execute();
 ExampleConnector.instance.GetUserByEmail(getUserByEmailVariables).execute();
 ExampleConnector.instance.GetUserByDisplayname(getUserByDisplaynameVariables).execute();
-ExampleConnector.instance.ListPlaces().execute();
 
 ```
 

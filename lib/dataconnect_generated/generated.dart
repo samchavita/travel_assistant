@@ -13,6 +13,8 @@ part 'create_place.dart';
 
 part 'create_route.dart';
 
+part 'update_user_session.dart';
+
 part 'list_users.dart';
 
 part 'get_user.dart';
@@ -28,6 +30,8 @@ part 'get_place.dart';
 part 'list_routes.dart';
 
 part 'get_route.dart';
+
+part 'get_user_by_token.dart';
 
 
 
@@ -60,6 +64,11 @@ class ExampleConnector {
   
   CreateRouteVariablesBuilder createRoute ({required String userId, required String name, }) {
     return CreateRouteVariablesBuilder(dataConnect, userId: userId,name: name,);
+  }
+  
+  
+  UpdateUserSessionVariablesBuilder updateUserSession ({required String userId, required String token, required Timestamp expiry, }) {
+    return UpdateUserSessionVariablesBuilder(dataConnect, userId: userId,token: token,expiry: expiry,);
   }
   
   
@@ -100,6 +109,11 @@ class ExampleConnector {
   
   GetRouteVariablesBuilder getRoute ({required String routeId, }) {
     return GetRouteVariablesBuilder(dataConnect, routeId: routeId,);
+  }
+  
+  
+  GetUserByTokenVariablesBuilder getUserByToken ({required String token, }) {
+    return GetUserByTokenVariablesBuilder(dataConnect, token: token,);
   }
   
 

@@ -10,7 +10,12 @@ import 'firebase_options.dart';
 import 'chatbot.dart';
 import 'main_navigation.dart';
 import 'settings.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:uuid/uuid.dart'; // for token generation
+import 'package:firebase_data_connect/firebase_data_connect.dart';
 // import 'package:firebase_data_connect/firebase_data_connect.dart';
+
+import 'dataconnect_generated/generated.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,11 +46,89 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
-class LandingPage extends StatelessWidget {
+// 2. CONVERT TO STATEFUL WIDGET
+class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
 
-  // const LandingPage({super.key})
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
 
+class _LandingPageState extends State<LandingPage> {
+  bool _isLoading = true; // Start true to check immediately on load
+
+  @override
+  void initState() {
+    super.initState();
+    // 3. TRIGGER CHECK ON INIT
+    _checkSession();
+  }
+
+String? _getSessionTokenFromCookie() {
+    final allCookies = html.document.cookie;
+    if (allCookies != null && allCookies.isNotEmpty) {
+      final cookieList = allCookies.split('; ');
+      for (var cookie in cookieList) {
+        // Ensure this key matches what you set in LoginPage ('auth_token=' vs 'sessionToken=')
+        if (cookie.startsWith('sessionToken=')) { 
+          return cookie.split('=')[1];
+        }
+      }
+    }
+
+    print("No session token found in cookies");
+    return null;
+  }
+
+  Future<void> _checkSession() async {
+    final token = _getSessionTokenFromCookie();
+
+    print("Token: $token");
+    // If no token in browser, stop loading and show "Get Started"
+    if (token == null) {
+      if (mounted) setState(() => _isLoading = false);
+      return;
+    }
+
+    try {
+      // 4. VERIFY WITH DATA CONNECT
+      // We ask the DB: "Who owns this token?"
+      print("getting user by token: $token");
+      final response = await ExampleConnector.instance.getUserByToken(token: token).execute();
+      print("error occurred");
+
+      if (response.data.users.isNotEmpty) {
+        final user = response.data.users.first;
+        
+        // Check if token is expired based on your DB field 'session_expiry'
+        // Assuming session_expiry is a Timestamp in seconds object
+        if (user.sessionExpiry != null && DateTime.now().isBefore(user.sessionExpiry!.toDateTime())) {
+          
+          print("Auto-login success for: ${user.displayname}");
+          
+          if (mounted) {
+            // 5. NAVIGATE TO MAIN APP
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MainNavigation()),
+            );
+            return; // Exit function so we don't set isLoading = false
+          }
+        }
+      }
+      
+      // If we reach here, token was invalid or expired
+      print("Session invalid or expired");
+      // Optional: Clear the invalid cookie
+      html.document.cookie = "auth_token=; max-age=0; path=/";
+
+    } catch (e) {
+      print("Session check failed: $e");
+    } finally {
+      // Stop loading so user can click "Get Started" manually
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +143,7 @@ class LandingPage extends StatelessWidget {
               padding: const EdgeInsets.all(40.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
+children: [
                   Text(
                     'Welcome Back!',
                     style: TextStyle(
@@ -70,38 +153,32 @@ class LandingPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 30.0),
-                  SizedBox(
-                    height: 45,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.teal,
-                      ),
-                      child: Text(
-                        'Get Started',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      onPressed: () {
-                        // print('Getting Started');
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      },
-                    ),
-                  ),
-
+                  
+                  // 6. CONDITIONAL UI
+                  // Show Spinner if checking, Button if check failed/no cookie
+                  _isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : SizedBox(
+                          height: 45,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.teal,
+                            ),
+                            child: Text(
+                              'Get Started',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginPage()),
+                              );
+                            },
+                          ),
+                        ),
                   SizedBox(height: 30.0),
-                  // Text(
-                  //   'Get Started!',
-                  //   style: TextStyle(
-                  //     fontSize: 15,
-                  //     fontWeight: FontWeight.bold,
-                  //     color: Colors.white,
-                  //   ),
-                  // ),
                 ],
               ),
             ),

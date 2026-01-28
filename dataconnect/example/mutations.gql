@@ -34,3 +34,15 @@ mutation CreateRoute($userId: UUID!, $name: String!, $description: String)
   @auth(level: PUBLIC) {
   route_insert(data: {userId: $userId, name: $name, description: $description})
 }
+
+# Used when the user logs in successfully
+mutation UpdateUserSession($userId: UUID!, $token: String!, $expiry: Timestamp!)
+  @auth(level: PUBLIC) {
+  user_update(
+    key: {userId: $userId},
+    data: { 
+      sessionToken: $token, 
+      sessionExpiry: $expiry 
+    }
+  )
+}

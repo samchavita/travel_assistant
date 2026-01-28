@@ -6,6 +6,11 @@ import 'main_navigation.dart';
 import 'signup.dart';
 import 'dataconnect_generated/generated.dart';
 import 'package:dbcrypt/dbcrypt.dart';
+import 'package:flutter/material.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:uuid/uuid.dart'; // for token generation
+import 'package:firebase_data_connect/firebase_data_connect.dart';
+
 
 // LOG IN PAGE
 class LoginPage extends StatefulWidget {
@@ -21,6 +26,26 @@ class LoginState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+
+  // Set the cookie
+  void _setSessionCookie(String sessionToken) {
+    // Calculate 2 days in seconds (2 * 24 * 60 * 60 = 172800)
+    const int maxAgeSeconds = 172800;
+    
+    // Create the cookie string
+    // "Secure" ensures it's only sent over HTTPS (recommended)
+    // "SameSite=Strict" prevents CSRF attacks
+    final cookieValue = 
+        "sessionToken=$sessionToken; max-age=$maxAgeSeconds; path=/; SameSite=Strict; Secure";
+
+    // Set the cookie in the browser
+    html.document.cookie = cookieValue;
+  }
+
+// Helper to generate a secure random token
+  String _generateSessionToken() {
+    return const Uuid().v4(); // Generates a random UUID string
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -279,20 +304,42 @@ class LoginState extends State<LoginPage> {
       if (bcrypt.checkpw(password, user.password)) {
         print('Login Success: ${user.displayname}');
         if (mounted) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainNavigation(),
-            ),
-            (Route<dynamic> route) => false, // This predicate ensures all previous routes are removed
-          );
 
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => MainNavigation(),
-          //   ),
-          // );
+// ---- NEW SECURITY LOGIC STARTS HERE ----
+        
+        // A. Generate a new secure token
+        final sessionToken = _generateSessionToken();
+
+        print("Generated session token: $sessionToken" );
+        
+        // B. Calculate expiry (2 days from now)
+        final timestamp = Timestamp(0, DateTime.now().add(const Duration(days: 2)).millisecondsSinceEpoch ~/ 1000);
+
+        // C. Save the token to the DATABASE (Server-side)
+        // This 'locks' the session to this user on the server
+        await ExampleConnector.instance.updateUserSession(
+          userId: user.userId,
+          token: sessionToken,
+          expiry: timestamp, // Ensure your schema accepts timestamp or String
+        ).execute();
+
+        // D. Save the token to the BROWSER (Client-side Cookie)
+        // Note: We are saving 'sessionToken', NOT 'user.id'
+        _setSessionCookie(sessionToken);
+
+// ---- NEW SECURITY LOGIC ENDS HERE ----
+
+
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainNavigation(),
+              ),
+              (Route<dynamic> route) => false,// This predicate ensures all previous routes are removed 
+            );
+          }
+
         }
       } else {
         print('Incorrect password');

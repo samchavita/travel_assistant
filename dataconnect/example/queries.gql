@@ -89,3 +89,12 @@ query GetRoute($routeId: UUID!) @auth(level: PUBLIC) {
     createdAt
   }
 }
+
+# Used for "Auto-Login" to find who owns the token
+query GetUserByToken($token: String!) @auth(level: PUBLIC) {
+  users(where: { sessionToken: { eq: $token } }) {
+    userId
+    displayname
+    sessionExpiry
+  }
+}
