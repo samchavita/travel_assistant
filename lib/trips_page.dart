@@ -12,14 +12,13 @@ class TripsPage extends StatefulWidget {
 }
 
 class _TripsPageState extends State<TripsPage> {
-  // Dummy data for now
   final List<Trip> _upcomingTrips = [
     Trip(
       id: '1',
       destination: 'NDHU Library',
       country: 'Shoufeng',
-      startDate: DateTime(2020, 1, 17),
-      endDate: DateTime(2020, 1, 24),
+      startDate: DateTime(2026, 1, 17),
+      endDate: DateTime(2026, 1, 24),
       durationDays: 7,
       type: 'Business',
       imageUrl: 'assets/images/ndhu_library.png',
@@ -28,183 +27,193 @@ class _TripsPageState extends State<TripsPage> {
       id: '2',
       destination: 'NDHU Solar Farm',
       country: 'Shoufeng',
-      startDate: DateTime(2020, 2, 14),
-      endDate: DateTime(2020, 2, 17),
+      startDate: DateTime(2026, 2, 14),
+      endDate: DateTime(2026, 2, 17),
       durationDays: 4,
       type: 'Vacation',
-      imageUrl: 'assets/images/solar_farm.png', // Example image
+      imageUrl: 'assets/images/solar_farm.png', 
     ),
     Trip(
       id: '3',
-      destination: 'Dormitory V',
+      destination: 'Dormitiory V',
       country: 'Shoufeng',
-      startDate: DateTime(2020, 3, 10),
-      endDate: DateTime(2020, 3, 15),
-      durationDays: 5,
-      type: 'Business',
-      imageUrl: 'assets/images/dorm_V.png', // Example image
+      startDate: DateTime(2026, 2, 28),
+      endDate: DateTime(2026, 2, 29),
+      durationDays: 2,
+      type: 'Vacation',
+      imageUrl: 'assets/images/dorm_V.png', 
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF5D5FEF);
+
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  'Upcoming Trips',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  itemCount: _upcomingTrips.length,
-                  itemBuilder: (context, index) {
-                    final trip = _upcomingTrips[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ItineraryDetailsPage(trip: trip),
-                          ),
-                        );
-                      },
-                      child: TripCard(trip: trip),
-                    );
-                  },
-                ),
-              ),
-            ],
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: false,
+        title: const Text(
+          'Upcoming Trips',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.tune_rounded, color: Colors.black54), // Filter icon
           ),
-          Positioned(
-            top: 100, // Adjust position as needed
-            right: 20,
-            child: FloatingActionButton(
-              onPressed: () {
-                // Handle edit action for the main list
-              },
-              backgroundColor: Colors.orange.shade100,
-              mini: true,
-              child: Icon(Icons.edit_outlined, color: Colors.orange.shade700),
-            ),
-          ),
+          const SizedBox(width: 10),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to a page to add a new trip
-          // For now, let's just print
-          print('Add new trip');
+      body: ListView.builder(
+        padding: const EdgeInsets.all(20.0),
+        itemCount: _upcomingTrips.length,
+        itemBuilder: (context, index) {
+          final trip = _upcomingTrips[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 25),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => ItineraryDetailsPage(trip: trip)),
+                );
+              },
+              child: TripCard(trip: trip),
+            ),
+          );
         },
-        backgroundColor: Colors.teal.shade300,
-        child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => print('Add trip'),
+        backgroundColor: primaryColor,
+        elevation: 4,
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
+        label: const Text("New Trip", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
     );
   }
 }
 
 class TripCard extends StatelessWidget {
   final Trip trip;
-
   const TripCard({super.key, required this.trip});
 
   @override
   Widget build(BuildContext context) {
-  final dateFormatter = DateFormat('MMM d');
+    final dayFormat = DateFormat('dd');
+    final monthFormat = DateFormat('MMM');
 
-  return Card(
-    margin: const EdgeInsets.only(bottom: 16.0),
-    elevation: 4.0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    child: Container(
-      padding: const EdgeInsets.all(16.0),
+    return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            // ignore: deprecated_member_use
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-          // Left side info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  trip.destination,
-                  style: const TextStyle(
-                    color: Colors.teal,
-                    fontWeight: FontWeight.bold,
+          // Image Section w/ Date Overlay
+          Stack(
+            children: [
+              Hero(
+                tag: 'trip_image_${trip.id}', // Remember this, i believe it be fix if we have unique data
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  child: Image.network(
+                    trip.imageUrl,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: 180,
+                      color: Colors.grey[200],
+                      child: const Icon(Icons.landscape, size: 50, color: Colors.grey),
+                    ),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  trip.country,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              ),
+              // Floating Date 
+              Positioned(
+                top: 15,
+                left: 15,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        dayFormat.format(trip.startDate),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      Text(
+                        monthFormat.format(trip.startDate),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.blueAccent),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  '${dateFormatter.format(trip.startDate)} - ${dateFormatter.format(trip.endDate)} | ${trip.durationDays} days',
-                  style: const TextStyle(fontSize: 14),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              ),
+              // Type
+              Positioned(
+                bottom: 15,
+                right: 15,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    trip.type.toUpperCase(),
+                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1),
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  trip.type,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          
+          // Details Section
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      trip.destination,
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.teal),
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Text(
+                          "${trip.country} • ${trip.durationDays} Days",
+                          style: const TextStyle(color: Colors.grey, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
+                const Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey, size: 18),
               ],
             ),
           ),
-
-          const SizedBox(width: 16),
-
-          // Right side image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              trip.imageUrl,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 100,
-                height: 100,
-                color: Colors.grey.shade300,
-                child: const Icon(Icons.broken_image, size: 40),
-              ),
-            ),
-          ),
         ],
       ),
-    ),
-  );
+    );
   }
 }
