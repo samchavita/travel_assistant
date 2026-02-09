@@ -14,7 +14,7 @@ const Color kUserBubbleColor = Colors.teal;
 // --- Configuration (Mirrors chat-widget.js Config) ---
 // If testing on Android Emulator, use 'http://10.0.2.2:5454/webhook'
 // If testing on iOS Simulator or Web, use 'http://localhost:5454/webhook'
-const String kBaseUrl = 'http://localhost:1234/webhook/'; 
+const String kBaseUrl = 'http://localhost:1111/webhook/';
 const String kRoute = 'general';
 
 void main() {
@@ -130,7 +130,7 @@ class _ChatbotInputScreenState extends State<ChatbotInputScreen> {
         if (mounted) {
           setState(() {
             _messages.add({
-              'text': botOutput,
+              'text': botOutput.split('</think>').last.trim(),
               'isUser': false
             });
           });
