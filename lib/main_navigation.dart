@@ -4,16 +4,41 @@ import 'trips_page.dart';
 import 'chatbot.dart';
 import 'maps.dart';
 import 'settings.dart';
+import 'package:firebase_data_connect/firebase_data_connect.dart';
+import 'dataconnect_generated/generated.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travel_app/providers/current_user.dart';
 
-class MainNavigation extends StatefulWidget {
+class MainNavigation extends ConsumerStatefulWidget {
   const MainNavigation({super.key});
 
   @override
-  State<MainNavigation> createState() => _MainNavigationState();
+  ConsumerState<MainNavigation> createState() => _MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
+class AvatarManager {
+  // This maps the Database Key -> The Local Asset Path
+  static const Map<String, String> avatars = {
+    'default': 'images/avatars/default.jpg',
+    'butterfly': 'images/avatars/butterfly.jpg',
+    'dandelion': 'images/avatars/dandelion.jpg',
+    'lake': 'images/avatars/lake.jpg',
+    'leaf': 'images/avatars/leaf.jpg',
+    'sun': 'images/avatars/sun.jpg',
+    'tree': 'images/avatars/tree.jpg',
+  };
+
+  // Safe getter: Returns the default image if the key is missing/corrupted
+  static String getAssetPath(String? key) {
+    return avatars[key] ?? avatars['default']!;
+  }
+}
+
+class _MainNavigationState extends ConsumerState<MainNavigation> {
   int _selectedIndex = 0;
+
+  // final String _defaultAvatar = AvatarManager.getAssetPath('default');
+
   final List<int> _navigationHistory = [0];
 
   late final List<Widget> _pages = [
@@ -54,6 +79,9 @@ class _MainNavigationState extends State<MainNavigation> {
   if (!_pagesWithHeader.contains(_selectedIndex)) return null;
 
   final bool showBackButton = _navigationHistory.length > 1;
+
+  final currentUser = ref.watch(currentUserProvider);
+  final userAvatarUrl = AvatarManager.getAssetPath(currentUser?.avatarKey);
 
   return AppBar(
     elevation: 0,
@@ -97,11 +125,9 @@ class _MainNavigationState extends State<MainNavigation> {
                 icon: const Icon(Icons.notifications_none, color: Colors.teal),
                 onPressed: () {},
              ),
-             const CircleAvatar(
+             CircleAvatar(
                 radius: 18,
-                backgroundImage: NetworkImage(
-                  'https://www.shutterstock.com/image-photo/smiling-african-american-millennial-businessman-600nw-1437938108.jpg',
-                ),
+                backgroundImage: AssetImage(userAvatarUrl),
               ),
           ],
         ),

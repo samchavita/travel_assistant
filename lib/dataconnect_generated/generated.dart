@@ -15,6 +15,8 @@ part 'create_route.dart';
 
 part 'update_user_session.dart';
 
+part 'update_user_password.dart';
+
 part 'list_users.dart';
 
 part 'get_user.dart';
@@ -32,6 +34,8 @@ part 'list_routes.dart';
 part 'get_route.dart';
 
 part 'get_user_by_token.dart';
+
+part 'get_user_avatar_key.dart';
 
 
 
@@ -69,6 +73,11 @@ class ExampleConnector {
   
   UpdateUserSessionVariablesBuilder updateUserSession ({required String userId, required String token, required Timestamp expiry, }) {
     return UpdateUserSessionVariablesBuilder(dataConnect, userId: userId,token: token,expiry: expiry,);
+  }
+  
+  
+  UpdateUserPasswordVariablesBuilder updateUserPassword ({required String email, required String password, }) {
+    return UpdateUserPasswordVariablesBuilder(dataConnect, email: email,password: password,);
   }
   
   
@@ -114,6 +123,11 @@ class ExampleConnector {
   
   GetUserByTokenVariablesBuilder getUserByToken ({required String token, }) {
     return GetUserByTokenVariablesBuilder(dataConnect, token: token,);
+  }
+  
+  
+  GetUserAvatarKeyVariablesBuilder getUserAvatarKey ({required String userId, }) {
+    return GetUserAvatarKeyVariablesBuilder(dataConnect, userId: userId,);
   }
   
 

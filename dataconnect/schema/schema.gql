@@ -8,6 +8,7 @@ type User @table(name: "users", singular: "user", key: ["userId"]) {
   password: String!
   createdAt: Timestamp! @default(expr: "request.time")
   
+  avatarKey: String! @default(value: "default")
   sessionToken: String
   sessionExpiry: Timestamp
 }

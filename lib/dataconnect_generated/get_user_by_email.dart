@@ -24,13 +24,15 @@ class GetUserByEmailUsers {
   final String password;
   final String displayname;
   final Timestamp createdAt;
+  final String avatarKey;
   GetUserByEmailUsers.fromJson(dynamic json):
   
   userId = nativeFromJson<String>(json['userId']),
   email = nativeFromJson<String>(json['email']),
   password = nativeFromJson<String>(json['password']),
   displayname = nativeFromJson<String>(json['displayname']),
-  createdAt = Timestamp.fromJson(json['createdAt']);
+  createdAt = Timestamp.fromJson(json['createdAt']),
+  avatarKey = nativeFromJson<String>(json['avatarKey']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -45,11 +47,12 @@ class GetUserByEmailUsers {
     email == otherTyped.email && 
     password == otherTyped.password && 
     displayname == otherTyped.displayname && 
-    createdAt == otherTyped.createdAt;
+    createdAt == otherTyped.createdAt && 
+    avatarKey == otherTyped.avatarKey;
     
   }
   @override
-  int get hashCode => Object.hashAll([userId.hashCode, email.hashCode, password.hashCode, displayname.hashCode, createdAt.hashCode]);
+  int get hashCode => Object.hashAll([userId.hashCode, email.hashCode, password.hashCode, displayname.hashCode, createdAt.hashCode, avatarKey.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -59,6 +62,7 @@ class GetUserByEmailUsers {
     json['password'] = nativeToJson<String>(password);
     json['displayname'] = nativeToJson<String>(displayname);
     json['createdAt'] = createdAt.toJson();
+    json['avatarKey'] = nativeToJson<String>(avatarKey);
     return json;
   }
 
@@ -68,6 +72,7 @@ class GetUserByEmailUsers {
     required this.password,
     required this.displayname,
     required this.createdAt,
+    required this.avatarKey,
   });
 }
 

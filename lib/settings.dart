@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travel_app/main.dart';
+import 'package:travel_app/providers/current_user.dart';
+import 'main_navigation.dart';
+import 'package:universal_html/html.dart' as html;
+import 'dataconnect_generated/generated.dart';
+import 'package:dbcrypt/dbcrypt.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Settings UI Demo',
+      title: 'Settings UI',
       theme: ThemeData(
         // Defining the specific Green color from the design
         primaryColor: const Color(0xFF10A37F),
@@ -37,11 +47,13 @@ class MyApp extends StatelessWidget {
 // SCREEN 1: Main Profile Menu
 // =============================================================================
 
-class ProfileMenuScreen extends StatelessWidget {
+class ProfileMenuScreen extends ConsumerWidget {
   const ProfileMenuScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -61,9 +73,13 @@ class ProfileMenuScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: const Color(0xFFD0F0C0), // Light green bg
-                            image: const DecorationImage(
-                              // Placeholder for the Memoji
-                              image: NetworkImage('https://i.pravatar.cc/300?img=5'),
+                            image: DecorationImage(
+                              // default image from asstes 
+
+                              // make call to firebase to retreive user avatar
+
+
+                              image: AssetImage(AvatarManager.getAssetPath(currentUser?.avatarKey)),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -71,9 +87,9 @@ class ProfileMenuScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      "Aishat Adewale",
-                      style: TextStyle(
+                    Text(
+                      (currentUser?.displayName ?? "USER").toUpperCase(),
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -117,6 +133,17 @@ class ProfileMenuScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
+              // Section: Rewards
+              _buildSectionHeader("REWARDS AND BENEFITS"),
+              _buildMenuContainer(
+                children: [
+                  _buildMenuItem(icon: Icons.card_giftcard, text: "Referral Program"),
+                  _buildDivider(),
+                  _buildMenuItem(icon: Icons.confirmation_number_outlined, text: "Redeem"),
+                ],
+              ),
+              const SizedBox(height: 30),
+
               // Section: Security
               _buildSectionHeader("SECURITY"),
               _buildMenuContainer(
@@ -132,7 +159,18 @@ class ProfileMenuScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  _buildDivider(),
+                  _buildMenuItem(
+                    icon: Icons.door_back_door_outlined,
+                    text: "Logout",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LogoutScreen()),
+                      );
+                    },
+                  ),
+                  // _buildDivider(),
                   // _buildMenuItem(icon: Icons.fingerprint, text: "Biometrics"),
                   // _buildDivider(),
                   // _buildMenuItem(icon: Icons.shield_outlined, text: "Security Question"),
@@ -140,17 +178,6 @@ class ProfileMenuScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
-
-              // Section: Rewards
-              _buildSectionHeader("REWARDS AND BENEFITS"),
-              _buildMenuContainer(
-                children: [
-                  _buildMenuItem(icon: Icons.card_giftcard, text: "Referral Program"),
-                  _buildDivider(),
-                  _buildMenuItem(icon: Icons.confirmation_number_outlined, text: "Redeem"),
-                ],
-              ),
-              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -224,27 +251,29 @@ class ProfileMenuScreen extends StatelessWidget {
 // SCREEN 2: Personal Information
 // =============================================================================
 
-class PersonalInfoScreen extends StatelessWidget {
+class PersonalInfoScreen extends ConsumerWidget {
   const PersonalInfoScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  // Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Personal Information"),
         centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: TextButton(
-              onPressed: () {},
-              child: const Text(
-                "Edit Profile",
-                style: TextStyle(color: Color(0xFF10A37F), fontWeight: FontWeight.bold),
-              ),
-            ),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 16.0),
+        //     child: TextButton(
+        //       onPressed: () {},
+        //       child: const Text(
+        //         "Edit Profile",
+        //         style: TextStyle(color: Color(0xFF10A37F), fontWeight: FontWeight.bold),
+        //       ),
+        //     ),
+        //   )
+        // ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -256,15 +285,41 @@ class PersonalInfoScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _buildInfoRow("Name", "Aishat Adewale"),
+              _buildInfoRow("Display name", (currentUser?.displayName ?? "USER").toUpperCase()),
               const Divider(indent: 16, endIndent: 16),
-              _buildInfoRow("Email", "adewaleaishat@spemail.com"),
-              const Divider(indent: 16, endIndent: 16),
-              _buildInfoRow("Phone Number", "+2347085634212"),
-              const Divider(indent: 16, endIndent: 16),
-              _buildInfoRow("Gender", "Female"),
-              const Divider(indent: 16, endIndent: 16),
-              _buildInfoRow("Birthday", "09 June, 2024"),
+              _buildInfoRow("Email", (currentUser?.email ?? "user@example.com").toUpperCase()),
+              // const Divider(indent: 16, endIndent: 16),
+              // const Divider(indent: 16, endIndent: 16),
+              // _buildInfoRow("Phone Number", "+2347085634212"),
+              // const Divider(indent: 16, endIndent: 16),
+              // _buildInfoRow("Gender", "Female"),
+              // const Divider(indent: 16, endIndent: 16),
+              // _buildInfoRow("Birthday", "09 June, 2024"),
+              // const SizedBox(height: 20),
+              // SizedBox(
+              //   width: double.infinity,
+              //   height: 50,
+              //   child: ElevatedButton(
+              //     onPressed: () {
+              //       Navigator.pushAndRemoveUntil(
+              //         context,
+              //         MaterialPageRoute(builder: (context) => const MainNavigation()),
+              //         (route) => false,
+              //       );
+              //     },
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: const Color(0xFF10A37F),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(25),
+              //       ),
+              //       elevation: 0,
+              //     ),
+              //     child: const Text(
+              //       "Confirm Logout",
+              //       style: TextStyle(fontSize: 16, color: Colors.white),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -311,11 +366,54 @@ class PersonalInfoScreen extends StatelessWidget {
 // SCREEN 3: Change Password
 // =============================================================================
 
-class ChangePasswordScreen extends StatelessWidget {
+class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
 
   @override
+  ConsumerState<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+}
+
+class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
+  final _oldPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+
+  bool _obscurePassword = true;
+  bool _obscureNewPassword = true;
+  String? newPasswordError;
+
+  void validatePassword(String value) {
+    String? error;
+    if (value.isEmpty) {
+      error = 'Password is required';
+    } else if (value.length < 8 || value.length > 20) {
+      error = 'Password must be 8–20 characters';
+    } else if (!RegExp(r'[A-Z]').hasMatch(value) &&
+        !RegExp(r'[a-z]').hasMatch(value)) {
+      error = 'Must contain at least one letter';
+    } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+      error = 'Must contain at least one number';
+    } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+      error = 'Must contain a special character';
+    } else if (!RegExp(r'^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>]+$').hasMatch(value)) {
+      error = 'Only English characters allowed';
+    }
+
+    setState(() {
+      newPasswordError = error;
+    });
+  }
+
+  @override
+  void dispose() {
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    final currentUser = ref.watch(currentUserProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Change Password"),
@@ -326,44 +424,129 @@ class ChangePasswordScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Current Password",
-              style: TextStyle(color: Colors.grey, fontSize: 13),
-            ),
-            const TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF10A37F))),
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              "New Password",
-              style: TextStyle(color: Colors.grey, fontSize: 13),
-            ),
-            const TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF10A37F))),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Password should be a minimum of 6 characters",
-              style: TextStyle(color: Colors.grey[400], fontSize: 11),
-            ),
+                // PASSWORD FIELD
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: TextFormField(
+                    controller: _oldPasswordController,
+                    obscureText: _obscurePassword,
+                    onChanged: (_) => {},
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(60.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 2.0,
+                        ),
+                      ),
+                      labelText: 'Current Password',
+                      hintText: 'Enter secure password',
+                      // errorText: newPasswordError,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
+
+                // CONFIRM PASSWORD FIELD
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: TextFormField(
+                    controller: _newPasswordController,
+                    obscureText: _obscureNewPassword,
+                    onChanged: (_) => validatePassword(_newPasswordController.text),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(60.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 2.0,
+                        ),
+                      ),
+                      labelText: 'New Password',
+                      hintText: 'Re-enter Password',
+                      errorText: newPasswordError, // Was passwordError in original copy
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureNewPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureNewPassword = !_obscureNewPassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
             const Spacer(),
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    // obtain email from provider curretn user
+                    final email = currentUser?.email;
+                    final currentPassword = _oldPasswordController.text;
+                    final newPassword = _newPasswordController.text;
+                    final response = await ExampleConnector.instance.getUserByEmail(email: email ?? '').execute();
+                    final user = response.data.users.first;
+                    final bcrypt = DBCrypt();
+
+                    if (bcrypt.checkpw(currentPassword, user.password)) {
+                      final hashedNewPassword = bcrypt.hashpw(
+                        newPassword.trim(),
+                        bcrypt.gensalt(),
+                      );
+
+                      await ExampleConnector.instance.updateUserPassword(email: email ?? '', password: hashedNewPassword).execute();
+                      print('password changed successfully');
+
+
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainNavigation()),
+                        (Route<dynamic> route) =>
+                            false, // This predicate ensures all previous routes are removed
+                      );
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Current password is incorrect'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+
+                  // Handle change password logic
+                  } catch (e) {
+                    // Handle error
+                    print('Error changing password: $e');
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF10A37F),
                   shape: RoundedRectangleBorder(
@@ -397,6 +580,155 @@ class ChangePasswordScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+
+// =============================================================================
+// SCREEN 4: Logout Screen
+// =============================================================================
+
+
+class LogoutScreen extends ConsumerWidget {
+  const LogoutScreen({super.key});
+
+  void _clearSessionTokenCookie() {
+    // Set the cookie with an expired date to remove it
+    final allCookies = html.document.cookie;
+    if (allCookies != null && allCookies.isNotEmpty) {
+      final cookieList = allCookies.split('; ');
+      for (var cookie in cookieList) {
+        if (cookie.startsWith('sessionToken=')) {
+          // delete the cookie from browser
+          html.document.cookie = 'sessionToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+          debugPrint('Session token cookie cleared');
+          return;
+        }
+      }
+    }
+
+    debugPrint('Session token cookie cleared');
+  }
+
+
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Text("Logout", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Spacer(),
+              // Icon
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.logout_rounded,
+                  size: 64,
+                  color: Colors.teal,
+                ),
+              ),
+              const SizedBox(height: 32),
+              
+              // Title
+              const Text(
+                "Log Out?",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              
+              // Description
+              Text(
+                "Are you sure you want to log out?\nYou'll need to login again to use the app.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                  height: 1.5,
+                ),
+              ),
+              const Spacer(),
+              
+              // Buttons
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _clearSessionTokenCookie();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LandingPage()),
+                      (route) => false,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text(
+                    "Yes, Log Out",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.grey[800],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    backgroundColor: Colors.grey[100],
+                  ),
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );

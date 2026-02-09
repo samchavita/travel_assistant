@@ -519,6 +519,14 @@ input User_Data {
   """
   userId_expr: UUID_Expr
   """
+  ✨ Generated from Field `User`.`avatarKey` of type `String!`
+  """
+  avatarKey: String
+  """
+  ✨ `_expr` server value variant of `avatarKey` (✨ Generated from Field `User`.`avatarKey` of type `String!`)
+  """
+  avatarKey_expr: String_Expr
+  """
   ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp
@@ -604,6 +612,10 @@ input User_Filter {
   """
   userId: UUID_Filter
   """
+  ✨ Generated from Field `User`.`avatarKey` of type `String!`
+  """
+  avatarKey: String_Filter
+  """
   ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp_Filter
@@ -665,6 +677,10 @@ input User_Having {
   ✨ Generated from Field `User`.`_count` of type `Int!`
   """
   _count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`avatarKey_count` of type `Int!`
+  """
+  avatarKey_count: Int_Filter
   """
   ✨ Generated from Field `User`.`createdAt_count` of type `Int!`
   """
@@ -745,6 +761,10 @@ input User_Order {
   """
   userId: OrderDirection
   """
+  ✨ Generated from Field `User`.`avatarKey` of type `String!`
+  """
+  avatarKey: OrderDirection
+  """
   ✨ Generated from Field `User`.`createdAt` of type `Timestamp!`
   """
   createdAt: OrderDirection
@@ -772,6 +792,10 @@ input User_Order {
   ✨ Generated from Field `User`.`_count` of type `Int!`
   """
   _count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`avatarKey_count` of type `Int!`
+  """
+  avatarKey_count: OrderDirection
   """
   ✨ Generated from Field `User`.`createdAt_count` of type `Int!`
   """

@@ -46,3 +46,15 @@ mutation UpdateUserSession($userId: UUID!, $token: String!, $expiry: Timestamp!)
     }
   )
 }
+
+
+# Used for updating the password via "Change Password"
+mutation UpdateUserPassword($email: String!, $password: String!)
+  @auth(level: PUBLIC) {
+  user_updateMany(
+    where: { email: { eq: $email } },
+    data: { 
+      password: $password
+    }
+  )
+}

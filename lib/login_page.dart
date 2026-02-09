@@ -6,46 +6,50 @@ import 'main_navigation.dart';
 import 'signup.dart';
 import 'dataconnect_generated/generated.dart';
 import 'package:dbcrypt/dbcrypt.dart';
-import 'package:flutter/material.dart';
-import 'package:universal_html/html.dart' as html;
-import 'package:uuid/uuid.dart'; // for token generation
+// import 'package:flutter/material.dart';
+// import 'package:universal_html/html.dart' as html;
+// import 'package:uuid/uuid.dart'; // for token generation
 import 'package:firebase_data_connect/firebase_data_connect.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'providers/current_user.dart';
+import 'package:travel_app/providers/user_session.dart';
 
 // LOG IN PAGE
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  LoginState createState() => LoginState();
+  ConsumerState<LoginPage> createState() => LoginState();
 }
 
-class LoginState extends State<LoginPage> {
+class LoginState extends ConsumerState<LoginPage> {
   bool _isChecked = false;
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  // Set the cookie
-  void _setSessionCookie(String sessionToken) {
-    // Calculate 2 days in seconds (2 * 24 * 60 * 60 = 172800)
-    const int maxAgeSeconds = 172800;
-    
-    // Create the cookie string
-    // "Secure" ensures it's only sent over HTTPS (recommended)
-    // "SameSite=Strict" prevents CSRF attacks
-    final cookieValue = 
-        "sessionToken=$sessionToken; max-age=$maxAgeSeconds; path=/; SameSite=Strict; Secure";
+  bool _obscurePassword = true;
 
-    // Set the cookie in the browser
-    html.document.cookie = cookieValue;
-  }
+  //   // Set the cookie
+  //   void _setSessionCookie(String sessionToken) {
+  //     // Calculate 2 days in seconds (2 * 24 * 60 * 60 = 172800)
+  //     const int maxAgeSeconds = 172800;
 
-// Helper to generate a secure random token
-  String _generateSessionToken() {
-    return const Uuid().v4(); // Generates a random UUID string
-  }
+  //     // Create the cookie string
+  //     // "Secure" ensures it's only sent over HTTPS (recommended)
+  //     // "SameSite=Strict" prevents CSRF attacks
+  //     final cookieValue =
+  //         "sessionToken=$sessionToken; max-age=$maxAgeSeconds; path=/; SameSite=Strict; Secure";
+
+  //     // Set the cookie in the browser
+  //     html.document.cookie = cookieValue;
+  //   }
+
+  // // Helper to generate a secure random token
+  //   String _generateSessionToken() {
+  //     return const Uuid().v4(); // Generates a random UUID string
+  //   }
 
   @override
   Widget build(BuildContext context) {
@@ -116,23 +120,57 @@ class LoginState extends State<LoginPage> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 0),
-                child: TextField(
+                padding: const EdgeInsets.only(top: 15),
+                child: TextFormField(
                   controller: _passwordController,
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(60.0),
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      borderSide: const BorderSide(
+                        color: Colors.white,
+                        width: 2.0,
+                      ),
                     ),
                     labelText: 'Password',
                     hintText: 'Enter secure password',
+                    // errorText: passwordError,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
                   ),
                 ),
               ),
 
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 15, bottom: 0),
+              //   child: TextField(
+              //     controller: _passwordController,
+              //     obscureText: true,
+              //     decoration: InputDecoration(
+              //       filled: true,
+              //       fillColor: Colors.white,
+              //       enabledBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(60.0),
+              //         borderSide: BorderSide(color: Colors.white, width: 2.0),
+              //       ),
+              //       labelText: 'Password',
+              //       hintText: 'Enter secure password',
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.only(top: 15, bottom: 0),
                 child: SizedBox(
@@ -223,12 +261,20 @@ class LoginState extends State<LoginPage> {
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.teal,
                     ),
-                    child: _isLoading 
-                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white))
-                      : const Text('Log in ', style: TextStyle(fontSize: 20)),
-                    onPressed: _isLoading ? null : () async {
-                      await _handleLogin();
-                    },
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Log in ', style: TextStyle(fontSize: 20)),
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                            await _handleLogin();
+                          },
                   ),
                 ),
               ),
@@ -281,16 +327,18 @@ class LoginState extends State<LoginPage> {
       // 1. CALL DATA CONNECT
       // Uses the singleton 'ExampleConnector.instance' from your snippet.
       // We call .execute() because the method returns a VariablesBuilder.
-      final response = await ExampleConnector.instance.getUserByEmail(email: email).execute();
+      final response = await ExampleConnector.instance
+          .getUserByEmail(email: email)
+          .execute();
 
       // 2. CHECK RESULTS
       // The 'response.data' usually contains the typed results of the query.
       if (response.data.users.isEmpty) {
         print('No user found with that email.');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('User not found')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('User not found')));
         }
         return;
       }
@@ -304,49 +352,65 @@ class LoginState extends State<LoginPage> {
       if (bcrypt.checkpw(password, user.password)) {
         print('Login Success: ${user.displayname}');
         if (mounted) {
+          // ---- NEW SECURITY LOGIC STARTS HERE ----
 
-// ---- NEW SECURITY LOGIC STARTS HERE ----
-        
-        // A. Generate a new secure token
-        final sessionToken = _generateSessionToken();
+          // A. Generate a new secure token
+          final session = SessionManager();
+          final sessionToken = session.getSessionToken();
 
-        print("Generated session token: $sessionToken" );
-        
-        // B. Calculate expiry (2 days from now)
-        final timestamp = Timestamp(0, DateTime.now().add(const Duration(days: 2)).millisecondsSinceEpoch ~/ 1000);
+          print("Generated session token: $sessionToken");
 
-        // C. Save the token to the DATABASE (Server-side)
-        // This 'locks' the session to this user on the server
-        await ExampleConnector.instance.updateUserSession(
-          userId: user.userId,
-          token: sessionToken,
-          expiry: timestamp, // Ensure your schema accepts timestamp or String
-        ).execute();
+          // B. Calculate expiry (2 days from now)
+          final timestamp = Timestamp(
+            0,
+            DateTime.now()
+                    .add(const Duration(days: 2))
+                    .millisecondsSinceEpoch ~/
+                1000,
+          );
 
-        // D. Save the token to the BROWSER (Client-side Cookie)
-        // Note: We are saving 'sessionToken', NOT 'user.id'
-        _setSessionCookie(sessionToken);
+          // C. Save the token to the DATABASE (Server-side)
+          // This 'locks' the session to this user on the server
+          if (sessionToken != null) {
+            await ExampleConnector.instance
+                .updateUserSession(
+                  userId: user.userId,
+                  token: sessionToken,
+                  expiry: _isChecked ? timestamp : Timestamp(0, 0), // Ensure your schema accepts timestamp or String
+                )
+                .execute();
+          }
 
-// ---- NEW SECURITY LOGIC ENDS HERE ----
+          // D. Save the token to the BROWSER (Client-side Cookie)
+          // Note: We are saving 'sessionToken', NOT 'user.id'
+          // _setSessionCookie(sessionToken);
 
+          // ---- NEW SECURITY LOGIC ENDS HERE ----
+
+          // E. Populate Riverpod provider with user info for app-wide use
+          ref.read(currentUserProvider.notifier).state = CurrentUser(
+            id: user.userId,
+            displayName: user.displayname,
+            avatarKey: user.avatarKey,
+            email: user.email,
+            sessionToken: sessionToken,
+          );
 
           if (mounted) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                builder: (context) => MainNavigation(),
-              ),
-              (Route<dynamic> route) => false,// This predicate ensures all previous routes are removed 
+              MaterialPageRoute(builder: (context) => MainNavigation()),
+              (Route<dynamic> route) =>
+                  false, // This predicate ensures all previous routes are removed
             );
           }
-
         }
       } else {
         print('Incorrect password');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Incorrect password')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Incorrect password')));
         }
       }
     } catch (e) {
@@ -363,9 +427,7 @@ class LoginState extends State<LoginPage> {
       }
     }
   }
-
 }
-
 
 // FORGOT PASSWORD PAGE
 class ForgotPwdPage extends StatefulWidget {

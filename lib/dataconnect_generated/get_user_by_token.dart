@@ -22,11 +22,15 @@ class GetUserByTokenUsers {
   final String userId;
   final String displayname;
   final Timestamp? sessionExpiry;
+  final String avatarKey;
+  final String email;
   GetUserByTokenUsers.fromJson(dynamic json):
   
   userId = nativeFromJson<String>(json['userId']),
   displayname = nativeFromJson<String>(json['displayname']),
-  sessionExpiry = json['sessionExpiry'] == null ? null : Timestamp.fromJson(json['sessionExpiry']);
+  sessionExpiry = json['sessionExpiry'] == null ? null : Timestamp.fromJson(json['sessionExpiry']),
+  avatarKey = nativeFromJson<String>(json['avatarKey']),
+  email = nativeFromJson<String>(json['email']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -39,11 +43,13 @@ class GetUserByTokenUsers {
     final GetUserByTokenUsers otherTyped = other as GetUserByTokenUsers;
     return userId == otherTyped.userId && 
     displayname == otherTyped.displayname && 
-    sessionExpiry == otherTyped.sessionExpiry;
+    sessionExpiry == otherTyped.sessionExpiry && 
+    avatarKey == otherTyped.avatarKey && 
+    email == otherTyped.email;
     
   }
   @override
-  int get hashCode => Object.hashAll([userId.hashCode, displayname.hashCode, sessionExpiry.hashCode]);
+  int get hashCode => Object.hashAll([userId.hashCode, displayname.hashCode, sessionExpiry.hashCode, avatarKey.hashCode, email.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -53,6 +59,8 @@ class GetUserByTokenUsers {
     if (sessionExpiry != null) {
       json['sessionExpiry'] = sessionExpiry!.toJson();
     }
+    json['avatarKey'] = nativeToJson<String>(avatarKey);
+    json['email'] = nativeToJson<String>(email);
     return json;
   }
 
@@ -60,6 +68,8 @@ class GetUserByTokenUsers {
     required this.userId,
     required this.displayname,
     this.sessionExpiry,
+    required this.avatarKey,
+    required this.email,
   });
 }
 

@@ -5,6 +5,7 @@ import 'package:travel_app/main_navigation.dart';
 import 'package:video_player/video_player.dart';
 import 'login_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travel_app/providers/current_user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'chatbot.dart';
@@ -13,6 +14,7 @@ import 'settings.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:uuid/uuid.dart'; // for token generation
 import 'package:firebase_data_connect/firebase_data_connect.dart';
+
 // import 'package:firebase_data_connect/firebase_data_connect.dart';
 
 import 'dataconnect_generated/generated.dart';
@@ -47,14 +49,14 @@ class WelcomePage extends StatelessWidget {
 }
 
 // 2. CONVERT TO STATEFUL WIDGET
-class LandingPage extends StatefulWidget {
+class LandingPage extends ConsumerStatefulWidget {
   const LandingPage({super.key});
 
   @override
-  State<LandingPage> createState() => _LandingPageState();
+  ConsumerState<LandingPage> createState() => _LandingPageState();
 }
 
-class _LandingPageState extends State<LandingPage> {
+class _LandingPageState extends ConsumerState<LandingPage> {
   bool _isLoading = true; // Start true to check immediately on load
 
   @override
@@ -64,7 +66,7 @@ class _LandingPageState extends State<LandingPage> {
     _checkSession();
   }
 
-String? _getSessionTokenFromCookie() {
+  String? _getSessionTokenFromCookie() {
     final allCookies = html.document.cookie;
     if (allCookies != null && allCookies.isNotEmpty) {
       final cookieList = allCookies.split('; ');
@@ -95,19 +97,25 @@ String? _getSessionTokenFromCookie() {
       // We ask the DB: "Who owns this token?"
       print("getting user by token: $token");
       final response = await ExampleConnector.instance.getUserByToken(token: token).execute();
-      print("error occurred");
+      // print("error occurred");
 
       if (response.data.users.isNotEmpty) {
         final user = response.data.users.first;
-        
+
         // Check if token is expired based on your DB field 'session_expiry'
-        // Assuming session_expiry is a Timestamp in seconds object
         if (user.sessionExpiry != null && DateTime.now().isBefore(user.sessionExpiry!.toDateTime())) {
-          
           print("Auto-login success for: ${user.displayname}");
-          
+
+          // Populate Riverpod provider with non-sensitive user info for app-wide use
+          ref.read(currentUserProvider.notifier).state = CurrentUser(
+            id: user.userId,
+            displayName: user.displayname,
+            avatarKey: user.avatarKey,
+            email: user.email, // Kept here, but ensure main.dart matches this
+            sessionToken: token,
+          );
+
           if (mounted) {
-            // 5. NAVIGATE TO MAIN APP
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => MainNavigation()),
@@ -120,7 +128,7 @@ String? _getSessionTokenFromCookie() {
       // If we reach here, token was invalid or expired
       print("Session invalid or expired");
       // Optional: Clear the invalid cookie
-      html.document.cookie = "auth_token=; max-age=0; path=/";
+      html.document.cookie = "sessionToken=; max-age=0; path=/";
 
     } catch (e) {
       print("Session check failed: $e");
@@ -129,6 +137,7 @@ String? _getSessionTokenFromCookie() {
       if (mounted) setState(() => _isLoading = false);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

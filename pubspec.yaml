@@ -59,7 +59,7 @@ dependencies:
   # searchable_listview: ^2.19.3
   hive_ce: ^2.15.1
   flutter_riverpod: ^2.6.1
-  firebase_core: ^4.2.1
+  firebase_core: ^4.4.0
   cloud_firestore: ^6.1.2
   firebase_data_connect: ^0.2.1+2
 

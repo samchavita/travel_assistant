@@ -27,6 +27,7 @@ query GetUserByEmail($email: String!) @auth(level: PUBLIC) {
     password
     displayname
     createdAt
+    avatarKey
   }
 }
 
@@ -96,5 +97,14 @@ query GetUserByToken($token: String!) @auth(level: PUBLIC) {
     userId
     displayname
     sessionExpiry
+    avatarKey
+    email
+  }
+}
+
+# Get User Avatar Key
+query GetUserAvatarKey($userId: UUID!) @auth(level: PUBLIC) {
+  user(key: { userId: $userId }) {
+    avatarKey
   }
 }
