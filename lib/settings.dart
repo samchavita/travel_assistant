@@ -6,6 +6,8 @@ import 'main_navigation.dart';
 import 'package:universal_html/html.dart' as html;
 import 'dataconnect_generated/generated.dart';
 import 'package:dbcrypt/dbcrypt.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
           secondary: const Color(0xFF10A37F),
         ),
       ),
-      home: const ProfileMenuScreen(),
+      home: ProfileMenuScreen(),
     );
   }
 }
@@ -48,7 +50,10 @@ class MyApp extends StatelessWidget {
 // =============================================================================
 
 class ProfileMenuScreen extends ConsumerWidget {
-  const ProfileMenuScreen({super.key});
+  ProfileMenuScreen({super.key});
+
+  final String avatar = "butterfly";
+  final List<String> _avatars = [ "butterfly", "dandelion", "default", "lake", "leaf", "sun", "tree",];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,13 +100,64 @@ class ProfileMenuScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "Edit Picture",
-                        style: TextStyle(color: Color(0xFF10A37F)),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  DropdownButton<String>(
+                      hint: const Text(
+                        "Select Avatar",
+                        style: TextStyle(fontSize: 15, color: Colors.teal),
                       ),
+                      style: const TextStyle(fontSize: 15, color: Colors.black),
+                      // icon: const Icon(Icons.keyboard_arrow_down),
+                      underline: Container(
+                        color: Colors.white,
+                      ),
+                      items: _avatars
+                          .map<DropdownMenuItem<String>>((String value) =>
+                              DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(capitalize(value)),
+                              ))
+                          .toList(),
+                      onChanged: (newItem) {
+                        if (newItem != null && currentUser != null) {
+                          // 1. Update global state so UI reflects change immediately
+                          ref.read(currentUserProvider.notifier).update((state) {
+                            if (state != null) {
+                              return CurrentUser(
+                                id: state.id,
+                                displayName: state.displayName,
+                                avatarKey: newItem,
+                                email: state.email,
+                                sessionToken: state.sessionToken,
+                              );
+                            }
+                            return state;
+                          });
+                          
+                          // 2. Persist to database
+                          ExampleConnector.instance.updateUserAvatar(
+                            email: currentUser.email ?? '',
+                            avatarKey: newItem,
+                          ).execute();
+                        }
+                      },
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      borderRadius: BorderRadius.circular(16.0),  
                     ),
+                  // IconButton(icon: Icon(Icons.sort), onPressed: () {})  
+                ],
+              ),
+
+                    // TextButton(
+                    //   onPressed: () {},
+                    //   child: 
+                    //   const Text(
+                    //     "Edit Picture",
+                    //     style: TextStyle(color: Color(0xFF10A37F)),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -245,7 +301,15 @@ class ProfileMenuScreen extends ConsumerWidget {
   Widget _buildDivider() {
     return const Divider(height: 1, thickness: 0.5, indent: 60, endIndent: 16);
   }
+
+  String capitalize(String value) {
+    if (value.isEmpty) return value;
+    return value[0].toUpperCase() + value.substring(1);
+  }
 }
+
+
+
 
 // =============================================================================
 // SCREEN 2: Personal Information

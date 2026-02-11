@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CurrentUser {
   final String id;
   final String? displayName;
-  final String? avatarKey;
+  String? avatarKey;
   final String? email;
   final String? sessionToken;
 

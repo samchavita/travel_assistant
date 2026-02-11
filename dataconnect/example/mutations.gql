@@ -58,3 +58,13 @@ mutation UpdateUserPassword($email: String!, $password: String!)
     }
   )
 }
+
+mutation UpdateUserAvatar($email: String!, $avatarKey: String!)
+  @auth(level: PUBLIC) {
+  user_updateMany(
+    where: { email: { eq: $email } },
+    data: { 
+      avatarKey: $avatarKey
+    }
+  )
+}

@@ -328,7 +328,7 @@ class LoginState extends ConsumerState<LoginPage> {
       // Uses the singleton 'ExampleConnector.instance' from your snippet.
       // We call .execute() because the method returns a VariablesBuilder.
       final response = await ExampleConnector.instance
-          .getUserByEmail(email: email)
+          .getUserByEmail(email: email.toLowerCase())
           .execute();
 
       // 2. CHECK RESULTS

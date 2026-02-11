@@ -136,7 +136,7 @@ class SignUpPageState extends ConsumerState<SignUpPage> {
       final result = await ExampleConnector.instance
           .createUser(
             displayname: _usernameController.text.trim(),
-            email: _emailController.text.trim(),
+            email: _emailController.text.trim().toLowerCase(),
             password: bcrypt.hashpw(
               _passwordController.text.trim(),
               bcrypt.gensalt(),
@@ -146,7 +146,7 @@ class SignUpPageState extends ConsumerState<SignUpPage> {
 
 
         final getResponse = await ExampleConnector.instance
-          .getUserByEmail(email: _emailController.text.trim())
+          .getUserByEmail(email: _emailController.text.trim().toLowerCase())
           .execute();
       // Access the returned data
       print('Created user: ${result.data}');

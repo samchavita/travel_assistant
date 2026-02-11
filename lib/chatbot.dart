@@ -148,7 +148,7 @@ class _ChatbotInputScreenState extends State<ChatbotInputScreen> {
     if (mounted) {
       setState(() {
         _messages.add({
-          'text': "Error: Could not connect to bot.\n($errorMsg)",
+          'text': "Error: Could not connect to assistant.",
           'isUser': false
         });
       });

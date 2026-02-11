@@ -887,3 +887,50 @@ final ref = ExampleConnector.instance.updateUserPassword(
 ref.execute();
 ```
 
+
+### UpdateUserAvatar
+#### Required Arguments
+```dart
+String email = ...;
+String avatarKey = ...;
+ExampleConnector.instance.updateUserAvatar(
+  email: email,
+  avatarKey: avatarKey,
+).execute();
+```
+
+
+
+#### Return Type
+`execute()` returns a `OperationResult<UpdateUserAvatarData, UpdateUserAvatarVariables>`
+```dart
+/// Result of an Operation Request (query/mutation).
+class OperationResult<Data, Variables> {
+  OperationResult(this.dataConnect, this.data, this.ref);
+  Data data;
+  OperationRef<Data, Variables> ref;
+  FirebaseDataConnect dataConnect;
+}
+
+final result = await ExampleConnector.instance.updateUserAvatar(
+  email: email,
+  avatarKey: avatarKey,
+);
+UpdateUserAvatarData data = result.data;
+final ref = result.ref;
+```
+
+#### Getting the Ref
+Each builder returns an `execute` function, which is a helper function that creates a `Ref` object, and executes the underlying operation.
+An example of how to use the `Ref` object is shown below:
+```dart
+String email = ...;
+String avatarKey = ...;
+
+final ref = ExampleConnector.instance.updateUserAvatar(
+  email: email,
+  avatarKey: avatarKey,
+).ref();
+ref.execute();
+```
+

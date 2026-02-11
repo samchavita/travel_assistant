@@ -17,6 +17,8 @@ part 'update_user_session.dart';
 
 part 'update_user_password.dart';
 
+part 'update_user_avatar.dart';
+
 part 'list_users.dart';
 
 part 'get_user.dart';
@@ -78,6 +80,11 @@ class ExampleConnector {
   
   UpdateUserPasswordVariablesBuilder updateUserPassword ({required String email, required String password, }) {
     return UpdateUserPasswordVariablesBuilder(dataConnect, email: email,password: password,);
+  }
+  
+  
+  UpdateUserAvatarVariablesBuilder updateUserAvatar ({required String email, required String avatarKey, }) {
+    return UpdateUserAvatarVariablesBuilder(dataConnect, email: email,avatarKey: avatarKey,);
   }
   
   

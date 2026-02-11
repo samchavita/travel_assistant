@@ -8,9 +8,9 @@ ExampleConnector.instance.CreatePlace(createPlaceVariables).execute();
 ExampleConnector.instance.CreateRoute(createRouteVariables).execute();
 ExampleConnector.instance.UpdateUserSession(updateUserSessionVariables).execute();
 ExampleConnector.instance.UpdateUserPassword(updateUserPasswordVariables).execute();
+ExampleConnector.instance.UpdateUserAvatar(updateUserAvatarVariables).execute();
 ExampleConnector.instance.ListUsers().execute();
 ExampleConnector.instance.GetUser(getUserVariables).execute();
-ExampleConnector.instance.GetUserByEmail(getUserByEmailVariables).execute();
 
 ```
 

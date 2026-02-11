@@ -8,12 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travel_app/providers/current_user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'chatbot.dart';
-import 'main_navigation.dart';
-import 'settings.dart';
+// import 'chatbot.dart';
+// import 'main_navigation.dart';
+// import 'settings.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:uuid/uuid.dart'; // for token generation
-import 'package:firebase_data_connect/firebase_data_connect.dart';
+// import 'package:uuid/uuid.dart'; // for token generation
+// import 'package:firebase_data_connect/firebase_data_connect.dart';
 
 // import 'package:firebase_data_connect/firebase_data_connect.dart';
 
@@ -103,6 +103,8 @@ class _LandingPageState extends ConsumerState<LandingPage> {
         final user = response.data.users.first;
 
         // Check if token is expired based on your DB field 'session_expiry'
+        print("now: ${DateTime.now()}, expiry: ${user.sessionExpiry?.toDateTime()}");
+
         if (user.sessionExpiry != null && DateTime.now().isBefore(user.sessionExpiry!.toDateTime())) {
           print("Auto-login success for: ${user.displayname}");
 

@@ -4,8 +4,8 @@ import 'trips_page.dart';
 import 'chatbot.dart';
 import 'maps.dart';
 import 'settings.dart';
-import 'package:firebase_data_connect/firebase_data_connect.dart';
-import 'dataconnect_generated/generated.dart';
+// import 'package:firebase_data_connect/firebase_data_connect.dart';
+// import 'dataconnect_generated/generated.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travel_app/providers/current_user.dart';
 
@@ -46,7 +46,7 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
     const TripsPage(),
     const AddItineraryStopPage(),
     const ChatbotApp(),
-    const ProfileMenuScreen(),
+    ProfileMenuScreen(),
   ];
 
   final Set<int> _pagesWithHeader = {0, 1, 2}; 
