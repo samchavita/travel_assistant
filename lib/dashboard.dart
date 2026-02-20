@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:travel_app/dataconnect_generated/generated.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 // Destination Model
 class Destination {
@@ -29,43 +32,97 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  final TextEditingController _searchController = TextEditingController();
-  
-  final List<Destination> allDestinations = [
-    Destination(
-      name: 'Lakeside Restaurant',
-      category: 'Restaurants',
-      image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/a8/32/57/caption.jpg?w=1200&h=-1&s=1',
-      location: 'Shoufeng, Hualien',
-      rating: 4.5,
-      price: '\$150',
-      description: 'The Lakeside Restaurant at NDHU offers a peaceful dining experience with a stunning view of the central lake. It is a favorite spot for students and faculty to enjoy local Hualien cuisine.',
-    ),
-    Destination(
-      name: 'NDHU Library',
-      category: 'Buildings',
-      image: 'assets/images/ndhu_library.png',
-      location: 'Shoufeng, Hualien',
-      rating: 4.9,
-      price: 'Free',
-      description: 'The National Dong Hwa University Library is an architectural masterpiece. It serves as the primary research hub for students and offers breathtaking views of the campus mountains.',
-    ),
-  ];
 
+  Future<List<Destination>> fetchPlaces() async {
+    final res = await ExampleConnector.instance.listPlaces().execute();
+    
+    // Convert to a modifiable list to shuffle
+    final places = res.data.places.toList();
+    places.shuffle();
+
+    return places.map((e) => Destination(
+      name: e.name,
+      category: 'Restaurant', // Or derive from description/other fields if available
+      image: (e.images != null && e.images!.isNotEmpty) 
+          ? e.images!.first 
+          : 'https://via.placeholder.com/150',
+      description: e.description ?? 'No description',
+      location: e.coordinates,
+      rating: 4.3, // Placeholder
+      price: '\$100', // Placeholder
+    )).toList();
+  }
+
+
+  final TextEditingController _searchController = TextEditingController();
   List<Destination> filteredDestinations = [];
+  List<Destination> _allDestinations = []; // Store all destinations for search
+  late Future<List<Destination>> allDestinationsFuture;
 
   @override
   void initState() {
     super.initState();
-    filteredDestinations = allDestinations;
+    allDestinationsFuture = fetchPlaces();
+    allDestinationsFuture.then((destinations) {
+      setState(() {
+        _allDestinations = destinations;
+        // Initially show only 7 random items
+        filteredDestinations = destinations.take(7).toList();
+      });
+    });
   }
+  
+  // [
+  //   Destination(
+  //     name: 'Lakeside Restaurant',
+  //     category: 'Restaurants',
+  //     image: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/a8/32/57/caption.jpg?w=1200&h=-1&s=1',
+  //     location: 'Shoufeng, Hualien',
+  //     rating: 4.5,
+  //     price: '\$150',
+  //     description: 'The Lakeside Restaurant at NDHU offers a peaceful dining experience with a stunning view of the central lake. It is a favorite spot for students and faculty to enjoy local Hualien cuisine.',
+  //   ),
+  //   Destination(
+  //     name: 'NDHU Library',
+  //     category: 'Buildings',
+  //     image: 'assets/images/ndhu_library.png',
+  //     location: 'Shoufeng, Hualien',
+  //     rating: 4.9,
+  //     price: 'Free',
+  //     description: 'The National Dong Hwa University Library is an architectural masterpiece. It serves as the primary research hub for students and offers breathtaking views of the campus mountains.',
+  //   ),
+  // ];
+
+
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   filteredDestinations = allDestinations;
+  // }
 
   void _onSearchChanged(String value) {
     setState(() {
-      filteredDestinations = allDestinations
-          .where((d) => d.name.toLowerCase().contains(value.toLowerCase()) || 
-                       d.category.toLowerCase().contains(value.toLowerCase()))
-          .toList();
+      if (value.isEmpty) {
+        // If search is cleared, show the initial 7 random places again
+        // (For a sticky selection, store the initial random set in another variable)
+        filteredDestinations = _allDestinations.take(7).toList();
+      } else {
+        // Search through ALL destinations
+        filteredDestinations = _allDestinations
+            .where((d) => d.name.toLowerCase().contains(value.toLowerCase()) ||
+                         d.category.toLowerCase().contains(value.toLowerCase()))
+            .toList();
+      }
+    });
+  }
+
+  void _refreshDashboard() {
+    setState(() {
+      _searchController.clear();
+      // Shuffle the existing list to get a new set of 7
+      _allDestinations.shuffle();
+      filteredDestinations = _allDestinations.take(7).toList();
     });
   }
 
@@ -92,12 +149,22 @@ class _DashboardState extends State<Dashboard> {
             ),
             ClipRRect(
               borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
-              child: Image.network(
-                data.image,
+              child: CachedNetworkImage(
+                imageUrl: data.image,
+                memCacheHeight: (180 * MediaQuery.of(context).devicePixelRatio).toInt(), // Optimize memory usage
                 height: 180,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(height: 180, color: Colors.grey[300], child: const Icon(Icons.image_not_supported)),
+                placeholder: (context, url) => Container(
+                  height: 180,
+                  color: Colors.grey[200],
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: 180,
+                  color: Colors.grey[300],
+                  child: const Center(child: Icon(Icons.image_not_supported)), // Centered icon
+                ),
               ),
             ),
           ],
@@ -110,23 +177,44 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
         child: Column(
           children: [
-            TextField(
-              controller: _searchController,
-              onChanged: _onSearchChanged,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search, color: Colors.teal),
-                hintText: "Search NDHU places...",
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: _onSearchChanged,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search, color: Colors.teal),
+                      hintText: "Search NDHU places...",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: IconButton(
+                    icon: const Icon(Icons.refresh, color: Colors.teal),
+                    onPressed: _refreshDashboard,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
-            ...filteredDestinations.map((d) => buildDestinationCard(d))
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredDestinations.length,
+                itemBuilder: (context, index) {
+                  return buildDestinationCard(filteredDestinations[index]);
+                },
+              ),
+            ),
           ],
         ),
       ),
