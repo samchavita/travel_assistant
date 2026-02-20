@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:dbcrypt/dbcrypt.dart';
 import 'package:travel_app/providers/user_session.dart';
 import 'package:travel_app/providers/current_user.dart';
 import 'dataconnect_generated/generated.dart';
 import 'package:firebase_data_connect/firebase_data_connect.dart';
 import 'main_navigation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // import 'your_database_connector.dart'; // Uncomment when integrating
 
@@ -118,118 +118,56 @@ class SignUpPageState extends ConsumerState<SignUpPage> {
 
     setState(() => loading = true);
 
-    final bcrypt = DBCrypt();
-    // final hashedPassword = bcrypt.hashpw(
-    //   _passwordController.text.trim(),
-    //   bcrypt.gensalt(),
-    // );
-
     try {
-      // Example connector call:
-      // final connector = ExampleConnector.instance;
-      // final result = await connector.createUser(
-      //   displayname: _usernameController.text.trim(),
-      //   email: _emailController.text.trim(),
-      //   password: hashedPassword,
-      // ).execute();
+      final email = _emailController.text.trim().toLowerCase();
+      final password = _passwordController.text.trim();
+      final username = _usernameController.text.trim();
 
-      final result = await ExampleConnector.instance
-          .createUser(
-            displayname: _usernameController.text.trim(),
-            email: _emailController.text.trim().toLowerCase(),
-            password: bcrypt.hashpw(
-              _passwordController.text.trim(),
-              bcrypt.gensalt(),
-            ),
-          )
-          .execute();
+      // Create Auth User
+      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
+      final user = userCredential.user;
+      if (user != null) {
+          await user.updateDisplayName(username);
+          
+          // Create DB User
+          await ExampleConnector.instance.createUser(
+            uid: user.uid,
+            displayname: username,
+            email: email,
+          ).execute();
 
-        final getResponse = await ExampleConnector.instance
-          .getUserByEmail(email: _emailController.text.trim().toLowerCase())
-          .execute();
-      // Access the returned data
-      print('Created user: ${result.data}');
-
-
-      await Future.delayed(const Duration(seconds: 1)); // simulate delay
-
-      // print('Created user: ${_usernameController.text}');
-      setState(() => loading = false);
-
-      if (context.mounted) {
-          final user = getResponse.data.users.first;
-          // ---- NEW SECURITY LOGIC STARTS HERE ----
-
-          // A. Generate a new secure token
-          final session = SessionManager();
-          final sessionToken = session.getSessionToken();
-
-          print("Generated session token: $sessionToken");
-
-          // B. Calculate expiry (2 days from now)
-          final timestamp = Timestamp(
-            0,
-            DateTime.now()
-                    .add(const Duration(days: 2))
-                    .millisecondsSinceEpoch ~/
-                1000,
-          );
-
-          // C. Save the token to the DATABASE (Server-side)
-          // This 'locks' the session to this user on the server
-          if (sessionToken != null) {
-            await ExampleConnector.instance
-                .updateUserSession(
-                  userId: user.userId,
-                  token: sessionToken,
-                  expiry:
-                      timestamp, // Ensure your schema accepts timestamp or String
-                )
-                .execute();
-          }
-
-          // D. Save the token to the BROWSER (Client-side Cookie)
-          // Note: We are saving 'sessionToken', NOT 'user.id'
-          // _setSessionCookie(sessionToken);
-
-          // ---- NEW SECURITY LOGIC ENDS HERE ----
-
-          // E. Populate Riverpod provider with user info for app-wide use
+          // Populate Provider
           ref.read(currentUserProvider.notifier).state = CurrentUser(
-            id: user.userId,
-            displayName: user.displayname,
-            avatarKey: user.avatarKey,
-            email: user.email,
-            sessionToken: sessionToken,
+            id: user.uid,
+            displayName: username,
+            email: email,
+            type: "client",
           );
 
           if (mounted) {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => MainNavigation()),
-              (Route<dynamic> route) =>
-                  false, // This predicate ensures all previous routes are removed
+              (Route<dynamic> route) => false,
             );
           }
-        
+      }
 
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainNavigation(),
-            ),
-            (Route<dynamic> route) => false, // This predicate ensures all previous routes are removed
-          );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created!')),
-        );
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message ?? 'Signup failed')));
       }
     } catch (e) {
-      setState(() => loading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+       print("Signup Error: $e");
+       if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+       }
+    } finally {
+      if (mounted) setState(() => loading = false);
     }
   }
 

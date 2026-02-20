@@ -2,15 +2,13 @@
 # USERS TABLE
 # -----------------------------
 type User @table(name: "users", singular: "user", key: ["userId"]) {
-  userId: UUID! @default(expr: "uuidV4()")
-  displayname: String! @unique
+  userId: String! 
+  displayname: String!
   email: String! @unique
-  password: String!
   createdAt: Timestamp! @default(expr: "request.time")
+  type: String! @default(value: "client") # "client" or "admin"
   
   avatarKey: String! @default(value: "default")
-  sessionToken: String
-  sessionExpiry: Timestamp
 }
 
 # -----------------------------
@@ -30,7 +28,7 @@ type Place @table(name: "places", singular: "place", key: ["placeId"]) {
 # -----------------------------
 type Route @table(name: "routes", singular: "route", key: ["routeId"]) {
   routeId: UUID! @default(expr: "uuidV4()")
-  userId: UUID!    # foreign key reference to users.user_id
+  userId: String!    # foreign key reference to users.user_id
   name: String!
   description: String
   createdAt: Timestamp! @default(expr: "request.time")

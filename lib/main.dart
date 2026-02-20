@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:travel_app/main_navigation.dart';
 import 'package:video_player/video_player.dart';
 import 'login_page.dart';
+import 'admin_pages/admin_login_page.dart';
+import 'admin_pages/admin_dashboard.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travel_app/providers/current_user.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 // import 'chatbot.dart';
 // import 'main_navigation.dart';
@@ -18,9 +21,11 @@ import 'package:universal_html/html.dart' as html;
 // import 'package:firebase_data_connect/firebase_data_connect.dart';
 
 import 'dataconnect_generated/generated.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
@@ -43,7 +48,12 @@ class WelcomePage extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      home: LandingPage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LandingPage(),
+        // '/': (context) => const AdminLoginPage(),
+        '/admin': (context) => const AdminLoginPage(),
+      },
     );
   }
 }
@@ -66,71 +76,51 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     _checkSession();
   }
 
-  String? _getSessionTokenFromCookie() {
-    final allCookies = html.document.cookie;
-    if (allCookies != null && allCookies.isNotEmpty) {
-      final cookieList = allCookies.split('; ');
-      for (var cookie in cookieList) {
-        // Ensure this key matches what you set in LoginPage ('auth_token=' vs 'sessionToken=')
-        if (cookie.startsWith('sessionToken=')) { 
-          return cookie.split('=')[1];
-        }
-      }
+  Future<void> _checkSession() async {
+    // Avoid running auto-login if LandingPage is not the active view
+    await Future.delayed(Duration.zero);
+    if (!mounted || ModalRoute.of(context)?.isCurrent != true) {
+      return;
     }
 
-    print("No session token found in cookies");
-    return null;
-  }
+    // Wait for auth state to be ready
+    final user = await FirebaseAuth.instance.authStateChanges().first;
 
-  Future<void> _checkSession() async {
-    final token = _getSessionTokenFromCookie();
-
-    print("Token: $token");
-    // If no token in browser, stop loading and show "Get Started"
-    if (token == null) {
+    if (user == null) {
       if (mounted) setState(() => _isLoading = false);
       return;
     }
 
     try {
       // 4. VERIFY WITH DATA CONNECT
-      // We ask the DB: "Who owns this token?"
-      print("getting user by token: $token");
-      final response = await ExampleConnector.instance.getUserByToken(token: token).execute();
-      // print("error occurred");
-
-      if (response.data.users.isNotEmpty) {
-        final user = response.data.users.first;
-
-        // Check if token is expired based on your DB field 'session_expiry'
-        print("now: ${DateTime.now()}, expiry: ${user.sessionExpiry?.toDateTime()}");
-
-        if (user.sessionExpiry != null && DateTime.now().isBefore(user.sessionExpiry!.toDateTime())) {
-          print("Auto-login success for: ${user.displayname}");
-
-          // Populate Riverpod provider with non-sensitive user info for app-wide use
-          ref.read(currentUserProvider.notifier).state = CurrentUser(
-            id: user.userId,
-            displayName: user.displayname,
-            avatarKey: user.avatarKey,
-            email: user.email, // Kept here, but ensure main.dart matches this
-            sessionToken: token,
-          );
-
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MainNavigation()),
-            );
-            return; // Exit function so we don't set isLoading = false
-          }
-        }
-      }
+      print("getting user profile for uid: ${user.uid}");
+      // Execute the GetUser query (updated to accept String userId)
+      final response = await ExampleConnector.instance.getUser(userId: user.uid).execute();
       
-      // If we reach here, token was invalid or expired
-      print("Session invalid or expired");
-      // Optional: Clear the invalid cookie
-      html.document.cookie = "sessionToken=; max-age=0; path=/";
+      // Note: 'user' field in response corresponds to the single user return
+      if (response.data.user != null) {
+        final dbUser = response.data.user!;
+        print("Auto-login success for: ${dbUser.displayname}");
+
+        // Populate Riverpod provider
+        ref.read(currentUserProvider.notifier).state = CurrentUser(
+          id: dbUser.userId,
+          displayName: dbUser.displayname,
+          avatarKey: dbUser.avatarKey, // Assuming updated schema
+          email: dbUser.email,
+          type: dbUser.type,
+        );
+
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MainNavigation()),
+          );
+          return; 
+        }
+      } else {
+        print("User authenticated but no profile found in DB.");
+      }
 
     } catch (e) {
       print("Session check failed: $e");

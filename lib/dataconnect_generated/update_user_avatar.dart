@@ -1,11 +1,11 @@
 part of 'generated.dart';
 
 class UpdateUserAvatarVariablesBuilder {
-  String email;
+  String userId;
   String avatarKey;
 
   final FirebaseDataConnect _dataConnect;
-  UpdateUserAvatarVariablesBuilder(this._dataConnect, {required  this.email,required  this.avatarKey,});
+  UpdateUserAvatarVariablesBuilder(this._dataConnect, {required  this.userId,required  this.avatarKey,});
   Deserializer<UpdateUserAvatarData> dataDeserializer = (dynamic json)  => UpdateUserAvatarData.fromJson(jsonDecode(json));
   Serializer<UpdateUserAvatarVariables> varsSerializer = (UpdateUserAvatarVariables vars) => jsonEncode(vars.toJson());
   Future<OperationResult<UpdateUserAvatarData, UpdateUserAvatarVariables>> execute() {
@@ -13,17 +13,51 @@ class UpdateUserAvatarVariablesBuilder {
   }
 
   MutationRef<UpdateUserAvatarData, UpdateUserAvatarVariables> ref() {
-    UpdateUserAvatarVariables vars= UpdateUserAvatarVariables(email: email,avatarKey: avatarKey,);
+    UpdateUserAvatarVariables vars= UpdateUserAvatarVariables(userId: userId,avatarKey: avatarKey,);
     return _dataConnect.mutation("UpdateUserAvatar", dataDeserializer, varsSerializer, vars);
   }
 }
 
 @immutable
+class UpdateUserAvatarUserUpdate {
+  final String userId;
+  UpdateUserAvatarUserUpdate.fromJson(dynamic json):
+  
+  userId = nativeFromJson<String>(json['userId']);
+  @override
+  bool operator ==(Object other) {
+    if(identical(this, other)) {
+      return true;
+    }
+    if(other.runtimeType != runtimeType) {
+      return false;
+    }
+
+    final UpdateUserAvatarUserUpdate otherTyped = other as UpdateUserAvatarUserUpdate;
+    return userId == otherTyped.userId;
+    
+  }
+  @override
+  int get hashCode => userId.hashCode;
+  
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json['userId'] = nativeToJson<String>(userId);
+    return json;
+  }
+
+  UpdateUserAvatarUserUpdate({
+    required this.userId,
+  });
+}
+
+@immutable
 class UpdateUserAvatarData {
-  final int user_updateMany;
+  final UpdateUserAvatarUserUpdate? user_update;
   UpdateUserAvatarData.fromJson(dynamic json):
   
-  user_updateMany = nativeFromJson<int>(json['user_updateMany']);
+  user_update = json['user_update'] == null ? null : UpdateUserAvatarUserUpdate.fromJson(json['user_update']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -34,32 +68,34 @@ class UpdateUserAvatarData {
     }
 
     final UpdateUserAvatarData otherTyped = other as UpdateUserAvatarData;
-    return user_updateMany == otherTyped.user_updateMany;
+    return user_update == otherTyped.user_update;
     
   }
   @override
-  int get hashCode => user_updateMany.hashCode;
+  int get hashCode => user_update.hashCode;
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['user_updateMany'] = nativeToJson<int>(user_updateMany);
+    if (user_update != null) {
+      json['user_update'] = user_update!.toJson();
+    }
     return json;
   }
 
   UpdateUserAvatarData({
-    required this.user_updateMany,
+    this.user_update,
   });
 }
 
 @immutable
 class UpdateUserAvatarVariables {
-  final String email;
+  final String userId;
   final String avatarKey;
   @Deprecated('fromJson is deprecated for Variable classes as they are no longer required for deserialization.')
   UpdateUserAvatarVariables.fromJson(Map<String, dynamic> json):
   
-  email = nativeFromJson<String>(json['email']),
+  userId = nativeFromJson<String>(json['userId']),
   avatarKey = nativeFromJson<String>(json['avatarKey']);
   @override
   bool operator ==(Object other) {
@@ -71,23 +107,23 @@ class UpdateUserAvatarVariables {
     }
 
     final UpdateUserAvatarVariables otherTyped = other as UpdateUserAvatarVariables;
-    return email == otherTyped.email && 
+    return userId == otherTyped.userId && 
     avatarKey == otherTyped.avatarKey;
     
   }
   @override
-  int get hashCode => Object.hashAll([email.hashCode, avatarKey.hashCode]);
+  int get hashCode => Object.hashAll([userId.hashCode, avatarKey.hashCode]);
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json['email'] = nativeToJson<String>(email);
+    json['userId'] = nativeToJson<String>(userId);
     json['avatarKey'] = nativeToJson<String>(avatarKey);
     return json;
   }
 
   UpdateUserAvatarVariables({
-    required this.email,
+    required this.userId,
     required this.avatarKey,
   });
 }

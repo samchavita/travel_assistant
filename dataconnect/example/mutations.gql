@@ -2,18 +2,23 @@
 # USERS MUTATIONS
 # -----------------------------
 
-mutation CreateUser($displayname: String!, $email: String!, $password: String!)
-  @auth(level: PUBLIC) {
-  user_insert(data: {displayname: $displayname, email: $email, password: $password})
+mutation CreateAdmin($uid: String!, $displayname: String!, $email: String!)
+  @auth(level: USER) {
+  user_insert(data: {userId: $uid, displayname: $displayname, email: $email, type: "admin" })
 }
 
-mutation UpdateUser($userId: UUID!, $displayname: String, $email: String, $password: String)
-  @auth(level: PUBLIC) {
-  user_update(key: {userId: $userId}, data: {displayname: $displayname, email: $email, password: $password})
+mutation CreateUser($uid: String!, $displayname: String!, $email: String!)
+  @auth(level: USER) {
+  user_insert(data: {userId: $uid, displayname: $displayname, email: $email, type: "client"})
 }
 
-mutation DeleteUser($userId: UUID!)
-  @auth(level: PUBLIC) {
+mutation UpdateUser($userId: String!, $displayname: String, $email: String)
+  @auth(level: USER) {
+  user_update(key: {userId: $userId}, data: {displayname: $displayname, email: $email})
+}
+
+mutation DeleteUser($userId: String!)
+  @auth(level: USER) {
   user_delete(key: {userId: $userId})
 }
 
@@ -22,47 +27,33 @@ mutation DeleteUser($userId: UUID!)
 # -----------------------------
 
 mutation CreatePlace($name: String!, $description: String, $coordinates: String!, $images: [String!])
-  @auth(level: PUBLIC) {
+  @auth(level: USER) {
   place_insert(data: {name: $name, description: $description, coordinates: $coordinates, images: $images})
+}
+
+mutation UpdatePlace($placeId: UUID!, $name: String, $description: String, $coordinates: String, $images: [String!])
+  @auth(level: USER) {
+  place_update(key: {placeId: $placeId}, data: {name: $name, description: $description, coordinates: $coordinates, images: $images})
+}
+
+mutation DeletePlace($placeId: UUID!)
+  @auth(level: USER) {
+  place_delete(key: {placeId: $placeId})
 }
 
 # -----------------------------
 # ROUTES MUTATIONS
 # -----------------------------
 
-mutation CreateRoute($userId: UUID!, $name: String!, $description: String)
-  @auth(level: PUBLIC) {
+mutation CreateRoute($userId: String!, $name: String!, $description: String)
+  @auth(level: USER) {
   route_insert(data: {userId: $userId, name: $name, description: $description})
 }
 
-# Used when the user logs in successfully
-mutation UpdateUserSession($userId: UUID!, $token: String!, $expiry: Timestamp!)
-  @auth(level: PUBLIC) {
+mutation UpdateUserAvatar($userId: String!, $avatarKey: String!)
+  @auth(level: USER) {
   user_update(
-    key: {userId: $userId},
-    data: { 
-      sessionToken: $token, 
-      sessionExpiry: $expiry 
-    }
-  )
-}
-
-
-# Used for updating the password via "Change Password"
-mutation UpdateUserPassword($email: String!, $password: String!)
-  @auth(level: PUBLIC) {
-  user_updateMany(
-    where: { email: { eq: $email } },
-    data: { 
-      password: $password
-    }
-  )
-}
-
-mutation UpdateUserAvatar($email: String!, $avatarKey: String!)
-  @auth(level: PUBLIC) {
-  user_updateMany(
-    where: { email: { eq: $email } },
+    key: { userId: $userId },
     data: { 
       avatarKey: $avatarKey
     }

@@ -1,0 +1,5 @@
+
+
+update schema:
+firebase deploy --only dataconnect
+firebase deploy --only dataconnect 2>&1

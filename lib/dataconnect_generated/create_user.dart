@@ -1,12 +1,12 @@
 part of 'generated.dart';
 
 class CreateUserVariablesBuilder {
+  String uid;
   String displayname;
   String email;
-  String password;
 
   final FirebaseDataConnect _dataConnect;
-  CreateUserVariablesBuilder(this._dataConnect, {required  this.displayname,required  this.email,required  this.password,});
+  CreateUserVariablesBuilder(this._dataConnect, {required  this.uid,required  this.displayname,required  this.email,});
   Deserializer<CreateUserData> dataDeserializer = (dynamic json)  => CreateUserData.fromJson(jsonDecode(json));
   Serializer<CreateUserVariables> varsSerializer = (CreateUserVariables vars) => jsonEncode(vars.toJson());
   Future<OperationResult<CreateUserData, CreateUserVariables>> execute() {
@@ -14,7 +14,7 @@ class CreateUserVariablesBuilder {
   }
 
   MutationRef<CreateUserData, CreateUserVariables> ref() {
-    CreateUserVariables vars= CreateUserVariables(displayname: displayname,email: email,password: password,);
+    CreateUserVariables vars= CreateUserVariables(uid: uid,displayname: displayname,email: email,);
     return _dataConnect.mutation("CreateUser", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -89,15 +89,15 @@ class CreateUserData {
 
 @immutable
 class CreateUserVariables {
+  final String uid;
   final String displayname;
   final String email;
-  final String password;
   @Deprecated('fromJson is deprecated for Variable classes as they are no longer required for deserialization.')
   CreateUserVariables.fromJson(Map<String, dynamic> json):
   
+  uid = nativeFromJson<String>(json['uid']),
   displayname = nativeFromJson<String>(json['displayname']),
-  email = nativeFromJson<String>(json['email']),
-  password = nativeFromJson<String>(json['password']);
+  email = nativeFromJson<String>(json['email']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -108,27 +108,27 @@ class CreateUserVariables {
     }
 
     final CreateUserVariables otherTyped = other as CreateUserVariables;
-    return displayname == otherTyped.displayname && 
-    email == otherTyped.email && 
-    password == otherTyped.password;
+    return uid == otherTyped.uid && 
+    displayname == otherTyped.displayname && 
+    email == otherTyped.email;
     
   }
   @override
-  int get hashCode => Object.hashAll([displayname.hashCode, email.hashCode, password.hashCode]);
+  int get hashCode => Object.hashAll([uid.hashCode, displayname.hashCode, email.hashCode]);
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
+    json['uid'] = nativeToJson<String>(uid);
     json['displayname'] = nativeToJson<String>(displayname);
     json['email'] = nativeToJson<String>(email);
-    json['password'] = nativeToJson<String>(password);
     return json;
   }
 
   CreateUserVariables({
+    required this.uid,
     required this.displayname,
     required this.email,
-    required this.password,
   });
 }
 

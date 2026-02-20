@@ -4,7 +4,6 @@ class UpdateUserVariablesBuilder {
   String userId;
   Optional<String> _displayname = Optional.optional(nativeFromJson, nativeToJson);
   Optional<String> _email = Optional.optional(nativeFromJson, nativeToJson);
-  Optional<String> _password = Optional.optional(nativeFromJson, nativeToJson);
 
   final FirebaseDataConnect _dataConnect;  UpdateUserVariablesBuilder displayname(String? t) {
    _displayname.value = t;
@@ -12,10 +11,6 @@ class UpdateUserVariablesBuilder {
   }
   UpdateUserVariablesBuilder email(String? t) {
    _email.value = t;
-   return this;
-  }
-  UpdateUserVariablesBuilder password(String? t) {
-   _password.value = t;
    return this;
   }
 
@@ -27,7 +22,7 @@ class UpdateUserVariablesBuilder {
   }
 
   MutationRef<UpdateUserData, UpdateUserVariables> ref() {
-    UpdateUserVariables vars= UpdateUserVariables(userId: userId,displayname: _displayname,email: _email,password: _password,);
+    UpdateUserVariables vars= UpdateUserVariables(userId: userId,displayname: _displayname,email: _email,);
     return _dataConnect.mutation("UpdateUser", dataDeserializer, varsSerializer, vars);
   }
 }
@@ -107,7 +102,6 @@ class UpdateUserVariables {
   final String userId;
   late final Optional<String>displayname;
   late final Optional<String>email;
-  late final Optional<String>password;
   @Deprecated('fromJson is deprecated for Variable classes as they are no longer required for deserialization.')
   UpdateUserVariables.fromJson(Map<String, dynamic> json):
   
@@ -122,10 +116,6 @@ class UpdateUserVariables {
     email = Optional.optional(nativeFromJson, nativeToJson);
     email.value = json['email'] == null ? null : nativeFromJson<String>(json['email']);
   
-  
-    password = Optional.optional(nativeFromJson, nativeToJson);
-    password.value = json['password'] == null ? null : nativeFromJson<String>(json['password']);
-  
   }
   @override
   bool operator ==(Object other) {
@@ -139,12 +129,11 @@ class UpdateUserVariables {
     final UpdateUserVariables otherTyped = other as UpdateUserVariables;
     return userId == otherTyped.userId && 
     displayname == otherTyped.displayname && 
-    email == otherTyped.email && 
-    password == otherTyped.password;
+    email == otherTyped.email;
     
   }
   @override
-  int get hashCode => Object.hashAll([userId.hashCode, displayname.hashCode, email.hashCode, password.hashCode]);
+  int get hashCode => Object.hashAll([userId.hashCode, displayname.hashCode, email.hashCode]);
   
 
   Map<String, dynamic> toJson() {
@@ -156,9 +145,6 @@ class UpdateUserVariables {
     if(email.state == OptionalState.set) {
       json['email'] = email.toJson();
     }
-    if(password.state == OptionalState.set) {
-      json['password'] = password.toJson();
-    }
     return json;
   }
 
@@ -166,7 +152,6 @@ class UpdateUserVariables {
     required this.userId,
     required this.displayname,
     required this.email,
-    required this.password,
   });
 }
 

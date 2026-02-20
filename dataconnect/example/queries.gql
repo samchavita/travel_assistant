@@ -2,7 +2,7 @@
 # USERS QUERIES
 # -----------------------------
 
-query ListUsers @auth(level: PUBLIC) {
+query ListUsers @auth(level: USER) {
   users {
     userId
     displayname
@@ -11,31 +11,38 @@ query ListUsers @auth(level: PUBLIC) {
   }
 }
 
-query GetUser($userId: UUID!) @auth(level: PUBLIC) {
+query GetUser($userId: String!) @auth(level: USER) {
   user(key: { userId: $userId }) {
     userId
     displayname
     email
     createdAt
-  }
-}
-
-query GetUserByEmail($email: String!) @auth(level: PUBLIC) {
-  users(where: {email: {eq: $email}}) {
-    userId
-    email
-    password
-    displayname
-    createdAt
+    type
     avatarKey
   }
 }
 
-query GetUserByDisplayname($displayname: String!) @auth(level: PUBLIC) {
+query IsAdmin($userId: String!) @auth(level: USER) {
+  user(key: { userId: $userId }) {
+    type
+  }
+}
+
+query GetUserByEmail($email: String!) @auth(level: USER) {
+  users(where: {email: {eq: $email}}) {
+    userId
+    email
+    displayname
+    createdAt
+    avatarKey
+    type
+  }
+}
+
+query GetUserByDisplayname($displayname: String!) @auth(level: USER) {
   users(where: {displayname: {eq: $displayname}}) {
     userId
     email
-    password
     displayname
     createdAt
   }
@@ -45,7 +52,7 @@ query GetUserByDisplayname($displayname: String!) @auth(level: PUBLIC) {
 # PLACES QUERIES
 # -----------------------------
 
-query ListPlaces @auth(level: PUBLIC) {
+query ListPlaces @auth(level: USER) {
   places {
     placeId
     name
@@ -56,7 +63,7 @@ query ListPlaces @auth(level: PUBLIC) {
   }
 }
 
-query GetPlace($placeId: UUID!) @auth(level: PUBLIC) {
+query GetPlace($placeId: UUID!) @auth(level: USER) {
   place(key: { placeId: $placeId }) {
     placeId
     name
@@ -71,7 +78,7 @@ query GetPlace($placeId: UUID!) @auth(level: PUBLIC) {
 # ROUTES QUERIES
 # -----------------------------
 
-query ListRoutes @auth(level: PUBLIC) {
+query ListRoutes @auth(level: USER) {
   routes {
     routeId
     name
@@ -81,7 +88,7 @@ query ListRoutes @auth(level: PUBLIC) {
   }
 }
 
-query GetRoute($routeId: UUID!) @auth(level: PUBLIC) {
+query GetRoute($routeId: UUID!) @auth(level: USER) {
   route(key: { routeId: $routeId }) {
     routeId
     name
@@ -91,19 +98,8 @@ query GetRoute($routeId: UUID!) @auth(level: PUBLIC) {
   }
 }
 
-# Used for "Auto-Login" to find who owns the token
-query GetUserByToken($token: String!) @auth(level: PUBLIC) {
-  users(where: { sessionToken: { eq: $token } }) {
-    userId
-    displayname
-    sessionExpiry
-    avatarKey
-    email
-  }
-}
-
 # Get User Avatar Key
-query GetUserAvatarKey($userId: UUID!) @auth(level: PUBLIC) {
+query GetUserAvatarKey($userId: String!) @auth(level: USER) {
   user(key: { userId: $userId }) {
     avatarKey
   }

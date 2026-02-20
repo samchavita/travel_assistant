@@ -2,6 +2,6 @@
 # Only one un-named mutation is allowed per file.
 mutation {
   user_insert(
-    data: {userId: "11111111222233334444555555555555", createdAt: "2026-01-30T06:37:48.000Z", displayname: "", email: "", password: "", profilePicture: "", sessionExpiry: "2026-01-30T06:37:48.000Z", sessionToken: ""}
+    data: {userId: "11111111222233334444555555555555", createdAt: "2026-01-30T06:37:48.000Z", displayname: "", email: ""}
   )
 }

@@ -1,18 +1,14 @@
-// import 'package:dbcrypt/dbcrypt.dart';
 import 'package:flutter/material.dart';
-// import 'package:travel_app/dashboard.dart';
 import 'main_navigation.dart';
-// import 'dataconnect_generated/generated.dart';
 import 'signup.dart';
 import 'dataconnect_generated/generated.dart';
-import 'package:dbcrypt/dbcrypt.dart';
-// import 'package:flutter/material.dart';
-// import 'package:universal_html/html.dart' as html;
-// import 'package:uuid/uuid.dart'; // for token generation
-import 'package:firebase_data_connect/firebase_data_connect.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/current_user.dart';
-import 'package:travel_app/providers/user_session.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'dart:async';
+import 'web_auth/auth_button.dart';
+
 
 // LOG IN PAGE
 class LoginPage extends ConsumerStatefulWidget {
@@ -30,6 +26,25 @@ class LoginState extends ConsumerState<LoginPage> {
   bool _isLoading = false;
 
   bool _obscurePassword = true;
+  StreamSubscription<GoogleSignInAuthenticationEvent>? _googleSignInSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _googleSignInSubscription = GoogleSignIn.instance.authenticationEvents.listen((event) async {
+       if (event is GoogleSignInAuthenticationEventSignIn) {
+          await _handleGoogleAuthAccount(event.user);
+       }
+    });
+  }
+
+  @override
+  void dispose() {
+    _googleSignInSubscription?.cancel();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   //   // Set the cookie
   //   void _setSessionCookie(String sessionToken) {
@@ -279,7 +294,29 @@ class LoginState extends ConsumerState<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 40),
+              const SizedBox(height: 20),
+              GoogleSignIn.instance.supportsAuthenticate()
+                  ? SizedBox(
+                      width: double.infinity,
+                      height: 45,
+                      child: OutlinedButton(
+                        onPressed: _isLoading ? null : _handleGoogleLogin,
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.teal, width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text('Sign in with Google',
+                            style: TextStyle(color: Colors.teal, fontSize: 18)),
+                      ),
+                    )
+                  : SizedBox(
+                      height: 45,
+                      width: double.infinity,
+                      child: Center(child: buildGoogleSignInButton()),
+                    ),
+              const SizedBox(height: 20),
               Center(
                 child: InkWell(
                   onTap: () {
@@ -312,7 +349,6 @@ class LoginState extends ConsumerState<LoginPage> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    // Basic validation
     if (email.isEmpty || password.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -324,108 +360,193 @@ class LoginState extends ConsumerState<LoginPage> {
     }
 
     try {
-      // 1. CALL DATA CONNECT
-      // Uses the singleton 'ExampleConnector.instance' from your snippet.
-      // We call .execute() because the method returns a VariablesBuilder.
-      final response = await ExampleConnector.instance
-          .getUserByEmail(email: email.toLowerCase())
-          .execute();
+      // Firebase Email/Password Login
+      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      
+      await _onAuthSuccess(userCredential.user);
 
-      // 2. CHECK RESULTS
-      // The 'response.data' usually contains the typed results of the query.
-      if (response.data.users.isEmpty) {
-        print('No user found with that email.');
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('User not found')));
-        }
-        return;
-      }
-
-      final user = response.data.users.first;
-      final bcrypt = DBCrypt();
-
-      // 3. VERIFY PASSWORD
-      // Note: In production, compare hashed passwords (e.g., BCrypt), not plain text.
-
-      if (bcrypt.checkpw(password, user.password)) {
-        print('Login Success: ${user.displayname}');
-        if (mounted) {
-          // ---- NEW SECURITY LOGIC STARTS HERE ----
-
-          // A. Generate a new secure token
-          final session = SessionManager();
-          final sessionToken = session.getSessionToken();
-
-          print("Generated session token: $sessionToken");
-
-          // B. Calculate expiry (2 days from now)
-          final timestamp = Timestamp(
-            0,
-            DateTime.now()
-                    .add(const Duration(days: 2))
-                    .millisecondsSinceEpoch ~/
-                1000,
-          );
-
-          // C. Save the token to the DATABASE (Server-side)
-          // This 'locks' the session to this user on the server
-          if (sessionToken != null) {
-            await ExampleConnector.instance
-                .updateUserSession(
-                  userId: user.userId,
-                  token: sessionToken,
-                  expiry: _isChecked ? timestamp : Timestamp(0, 0), // Ensure your schema accepts timestamp or String
-                )
-                .execute();
-          }
-
-          // D. Save the token to the BROWSER (Client-side Cookie)
-          // Note: We are saving 'sessionToken', NOT 'user.id'
-          // _setSessionCookie(sessionToken);
-
-          // ---- NEW SECURITY LOGIC ENDS HERE ----
-
-          // E. Populate Riverpod provider with user info for app-wide use
-          ref.read(currentUserProvider.notifier).state = CurrentUser(
-            id: user.userId,
-            displayName: user.displayname,
-            avatarKey: user.avatarKey,
-            email: user.email,
-            sessionToken: sessionToken,
-          );
-
-          if (mounted) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MainNavigation()),
-              (Route<dynamic> route) =>
-                  false, // This predicate ensures all previous routes are removed
-            );
-          }
-        }
-      } else {
-        print('Incorrect password');
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Incorrect password')));
-        }
-      }
-    } catch (e) {
-      print('Login Error: $e');
+    } on FirebaseAuthException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          // SnackBar(content: Text('Error: $e')),
-          SnackBar(content: Text('Something went wrong. Please try again.')),
+           SnackBar(content: Text(e.message ?? 'Login failed')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
         );
       }
     } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _handleGoogleAuthAccount(GoogleSignInAccount account) async {
+    // If called from listener (Web), _isLoading might be false.
+    if (!_isLoading) {
+      setState(() => _isLoading = true);
+    }
+
+    try {
+      print("Google Sign-In successful: ${account.email}");
+
+      // 3. Obtain the auth details (synchronous in v7)
+      final GoogleSignInAuthentication googleAuth = account.authentication;
+
+      // 4. Create a new credential
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.idToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // 5. Once signed in, return the UserCredential
+      final UserCredential userCredential = 
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      
+      // 6. Pass the user to your existing Data Connect / Riverpod logic
+      await _onAuthSuccess(userCredential.user);
+        
+    } catch (e) {
+      debugPrint('Google Login Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Sign-In processing failed: $e'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } finally {
+      // Ensure loading state is cleared
       if (mounted) {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  Future<void> _handleGoogleLogin() async {
+    // 1. Prevent multiple simultaneous login attempts
+    if (_isLoading) return;
+
+    // Guard: authenticate() is not supported on Web in v7.
+    // The UI should hide the button, but we add a safety check here.
+    if (!GoogleSignIn.instance.supportsAuthenticate()) {
+       if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(content: Text('Please use the Google Sign-In button provided.')),
+         );
+       }
+       return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      // 2. Trigger the Google Authentication flow
+      final GoogleSignInAccount user = await GoogleSignIn.instance.authenticate();
+      
+      await _handleGoogleAuthAccount(user);
+        
+    } catch (e) {
+      debugPrint('Google Login Error: $e');
+      if (mounted) {
+        // Don't show confusing error if user cancelled
+        if (!e.toString().contains('canceled')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Google Sign-In failed. Please try again.'),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
+      }
+    } finally {
+      // Ensure loading state is cleared
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+
+  // Future<void> _handleGoogleLogin() async {
+  //   setState(() => _isLoading = true);
+  //   try {
+  //     final GoogleSignIn googleSignIn = GoogleSignIn();
+  //     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      
+  //     if (googleUser == null) {
+  //       setState(() => _isLoading = false);
+  //       return; // User canceled
+  //     }
+
+  //     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+  //     final OAuthCredential credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+
+  //     final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+  //     await _onAuthSuccess(userCredential.user);
+      
+  //   } catch (e) {
+  //     print('Google Login Error: $e');
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Google Sign-In failed: $e')),
+  //       );
+  //     }
+  //     setState(() => _isLoading = false);
+  //   }
+  // }
+
+  Future<void> _onAuthSuccess(User? user) async {
+      if (user == null) return;
+      
+      // Fetch user profile from Data Connect
+      // Check if user exists in DB. If not (first time Google login), create them.
+      try {
+        final response = await ExampleConnector.instance.getUser(userId: user.uid).execute();
+        var dbUser = response.data.user;
+
+        if (dbUser == null) {
+           // First time login with Google -> Create User record
+           await ExampleConnector.instance.createUser(
+             uid: user.uid,
+             displayname: user.displayName ?? 'User',
+             email: user.email ?? '',
+           ).execute();
+           
+           // Fetch again
+           final newResponse = await ExampleConnector.instance.getUser(userId: user.uid).execute();
+           dbUser = newResponse.data.user;
+        }
+        
+        if (dbUser != null) {
+            ref.read(currentUserProvider.notifier).state = CurrentUser(
+              id: dbUser.userId,
+              displayName: dbUser.displayname,
+              avatarKey: dbUser.avatarKey,
+              email: dbUser.email,
+              type: dbUser.type,
+            );
+        }
+
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => MainNavigation()),
+            (route) => false,
+          );
+        }
+      } catch(e) {
+        print("Error fetching/creating user profile: $e");
+        // Proceed anyway? Or show error?
+      }
   }
 }
 

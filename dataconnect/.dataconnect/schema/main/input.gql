@@ -312,13 +312,13 @@ input Route_Data {
   """
   name_expr: String_Expr
   """
-  ✨ Generated from Field `Route`.`userId` of type `UUID!`
+  ✨ Generated from Field `Route`.`userId` of type `String!`
   """
-  userId: UUID
+  userId: String
   """
-  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Route`.`userId` of type `UUID!`)
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `Route`.`userId` of type `String!`)
   """
-  userId_expr: UUID_Expr
+  userId_expr: String_Expr
 }
 """
 ✨ Generated filter input type for table 'Route'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -353,9 +353,9 @@ input Route_Filter {
   """
   name: String_Filter
   """
-  ✨ Generated from Field `Route`.`userId` of type `UUID!`
+  ✨ Generated from Field `Route`.`userId` of type `String!`
   """
-  userId: UUID_Filter
+  userId: String_Filter
 }
 """
 ✨ Generated first-row input type for table 'Route'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -470,7 +470,7 @@ input Route_Order {
   """
   name: OrderDirection
   """
-  ✨ Generated from Field `Route`.`userId` of type `UUID!`
+  ✨ Generated from Field `Route`.`userId` of type `String!`
   """
   userId: OrderDirection
   """
@@ -511,13 +511,13 @@ input Route_Order {
 """
 input User_Data {
   """
-  ✨ Generated from Field `User`.`userId` of type `UUID!`
+  ✨ Generated from Field `User`.`userId` of type `String!`
   """
-  userId: UUID
+  userId: String
   """
-  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `User`.`userId` of type `UUID!`)
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `User`.`userId` of type `String!`)
   """
-  userId_expr: UUID_Expr
+  userId_expr: String_Expr
   """
   ✨ Generated from Field `User`.`avatarKey` of type `String!`
   """
@@ -559,37 +559,13 @@ input User_Data {
   """
   email_expr: String_Expr
   """
-  ✨ Generated from Field `User`.`password` of type `String!`
+  ✨ Generated from Field `User`.`type` of type `String!`
   """
-  password: String
+  type: String
   """
-  ✨ `_expr` server value variant of `password` (✨ Generated from Field `User`.`password` of type `String!`)
+  ✨ `_expr` server value variant of `type` (✨ Generated from Field `User`.`type` of type `String!`)
   """
-  password_expr: String_Expr
-  """
-  ✨ Generated from Field `User`.`sessionExpiry` of type `Timestamp`
-  """
-  sessionExpiry: Timestamp
-  """
-  ✨ `_expr` server value variant of `sessionExpiry` (✨ Generated from Field `User`.`sessionExpiry` of type `Timestamp`)
-  """
-  sessionExpiry_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `sessionExpiry` (✨ Generated from Field `User`.`sessionExpiry` of type `Timestamp`)
-  """
-  sessionExpiry_time: Timestamp_Relative
-  """
-  ✨ `_update` server value variant of `sessionExpiry` (✨ Generated from Field `User`.`sessionExpiry` of type `Timestamp`)
-  """
-  sessionExpiry_update: [Timestamp_Update!]
-  """
-  ✨ Generated from Field `User`.`sessionToken` of type `String`
-  """
-  sessionToken: String
-  """
-  ✨ `_expr` server value variant of `sessionToken` (✨ Generated from Field `User`.`sessionToken` of type `String`)
-  """
-  sessionToken_expr: String_Expr
+  type_expr: String_Expr
 }
 """
 ✨ Generated filter input type for table 'User'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -608,9 +584,9 @@ input User_Filter {
   """
   _or: [User_Filter!]
   """
-  ✨ Generated from Field `User`.`userId` of type `UUID!`
+  ✨ Generated from Field `User`.`userId` of type `String!`
   """
-  userId: UUID_Filter
+  userId: String_Filter
   """
   ✨ Generated from Field `User`.`avatarKey` of type `String!`
   """
@@ -628,17 +604,9 @@ input User_Filter {
   """
   email: String_Filter
   """
-  ✨ Generated from Field `User`.`password` of type `String!`
+  ✨ Generated from Field `User`.`type` of type `String!`
   """
-  password: String_Filter
-  """
-  ✨ Generated from Field `User`.`sessionExpiry` of type `Timestamp`
-  """
-  sessionExpiry: Timestamp_Filter
-  """
-  ✨ Generated from Field `User`.`sessionToken` of type `String`
-  """
-  sessionToken: String_Filter
+  type: String_Filter
 }
 """
 ✨ Generated first-row input type for table 'User'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -694,17 +662,9 @@ input User_Having {
   """
   email_count: Int_Filter
   """
-  ✨ Generated from Field `User`.`password_count` of type `Int!`
+  ✨ Generated from Field `User`.`type_count` of type `Int!`
   """
-  password_count: Int_Filter
-  """
-  ✨ Generated from Field `User`.`sessionExpiry_count` of type `Int!`
-  """
-  sessionExpiry_count: Int_Filter
-  """
-  ✨ Generated from Field `User`.`sessionToken_count` of type `Int!`
-  """
-  sessionToken_count: Int_Filter
+  type_count: Int_Filter
   """
   ✨ Generated from Field `User`.`userId_count` of type `Int!`
   """
@@ -714,30 +674,22 @@ input User_Having {
   """
   createdAt_min: Timestamp_Filter
   """
-  ✨ Generated from Field `User`.`sessionExpiry_min` of type `Timestamp`
-  """
-  sessionExpiry_min: Timestamp_Filter
-  """
   ✨ Generated from Field `User`.`createdAt_max` of type `Timestamp`
   """
   createdAt_max: Timestamp_Filter
-  """
-  ✨ Generated from Field `User`.`sessionExpiry_max` of type `Timestamp`
-  """
-  sessionExpiry_max: Timestamp_Filter
 }
 """
 ✨ Generated key input type for table 'User'. It represents the primary key fields used to uniquely identify a row in the table.
 """
 input User_Key {
   """
-  ✨ Generated from Field `User`.`userId` of type `UUID!`
+  ✨ Generated from Field `User`.`userId` of type `String!`
   """
-  userId: UUID
+  userId: String
   """
-  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `User`.`userId` of type `UUID!`)
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `User`.`userId` of type `String!`)
   """
-  userId_expr: UUID_Expr
+  userId_expr: String_Expr
 }
 """
 ✨ Generated list filter input type for table 'User'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -757,7 +709,7 @@ input User_ListFilter {
 """
 input User_Order {
   """
-  ✨ Generated from Field `User`.`userId` of type `UUID!`
+  ✨ Generated from Field `User`.`userId` of type `String!`
   """
   userId: OrderDirection
   """
@@ -777,17 +729,9 @@ input User_Order {
   """
   email: OrderDirection
   """
-  ✨ Generated from Field `User`.`password` of type `String!`
+  ✨ Generated from Field `User`.`type` of type `String!`
   """
-  password: OrderDirection
-  """
-  ✨ Generated from Field `User`.`sessionExpiry` of type `Timestamp`
-  """
-  sessionExpiry: OrderDirection
-  """
-  ✨ Generated from Field `User`.`sessionToken` of type `String`
-  """
-  sessionToken: OrderDirection
+  type: OrderDirection
   """
   ✨ Generated from Field `User`.`_count` of type `Int!`
   """
@@ -809,17 +753,9 @@ input User_Order {
   """
   email_count: OrderDirection
   """
-  ✨ Generated from Field `User`.`password_count` of type `Int!`
+  ✨ Generated from Field `User`.`type_count` of type `Int!`
   """
-  password_count: OrderDirection
-  """
-  ✨ Generated from Field `User`.`sessionExpiry_count` of type `Int!`
-  """
-  sessionExpiry_count: OrderDirection
-  """
-  ✨ Generated from Field `User`.`sessionToken_count` of type `Int!`
-  """
-  sessionToken_count: OrderDirection
+  type_count: OrderDirection
   """
   ✨ Generated from Field `User`.`userId_count` of type `Int!`
   """
@@ -829,15 +765,7 @@ input User_Order {
   """
   createdAt_min: OrderDirection
   """
-  ✨ Generated from Field `User`.`sessionExpiry_min` of type `Timestamp`
-  """
-  sessionExpiry_min: OrderDirection
-  """
   ✨ Generated from Field `User`.`createdAt_max` of type `Timestamp`
   """
   createdAt_max: OrderDirection
-  """
-  ✨ Generated from Field `User`.`sessionExpiry_max` of type `Timestamp`
-  """
-  sessionExpiry_max: OrderDirection
 }

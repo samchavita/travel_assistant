@@ -3,6 +3,8 @@ import 'package:firebase_data_connect/firebase_data_connect.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
 
+part 'create_admin.dart';
+
 part 'create_user.dart';
 
 part 'update_user.dart';
@@ -11,17 +13,19 @@ part 'delete_user.dart';
 
 part 'create_place.dart';
 
+part 'update_place.dart';
+
+part 'delete_place.dart';
+
 part 'create_route.dart';
-
-part 'update_user_session.dart';
-
-part 'update_user_password.dart';
 
 part 'update_user_avatar.dart';
 
 part 'list_users.dart';
 
 part 'get_user.dart';
+
+part 'is_admin.dart';
 
 part 'get_user_by_email.dart';
 
@@ -35,8 +39,6 @@ part 'list_routes.dart';
 
 part 'get_route.dart';
 
-part 'get_user_by_token.dart';
-
 part 'get_user_avatar_key.dart';
 
 
@@ -48,8 +50,13 @@ part 'get_user_avatar_key.dart';
 class ExampleConnector {
   
   
-  CreateUserVariablesBuilder createUser ({required String displayname, required String email, required String password, }) {
-    return CreateUserVariablesBuilder(dataConnect, displayname: displayname,email: email,password: password,);
+  CreateAdminVariablesBuilder createAdmin ({required String uid, required String displayname, required String email, }) {
+    return CreateAdminVariablesBuilder(dataConnect, uid: uid,displayname: displayname,email: email,);
+  }
+  
+  
+  CreateUserVariablesBuilder createUser ({required String uid, required String displayname, required String email, }) {
+    return CreateUserVariablesBuilder(dataConnect, uid: uid,displayname: displayname,email: email,);
   }
   
   
@@ -68,23 +75,23 @@ class ExampleConnector {
   }
   
   
+  UpdatePlaceVariablesBuilder updatePlace ({required String placeId, }) {
+    return UpdatePlaceVariablesBuilder(dataConnect, placeId: placeId,);
+  }
+  
+  
+  DeletePlaceVariablesBuilder deletePlace ({required String placeId, }) {
+    return DeletePlaceVariablesBuilder(dataConnect, placeId: placeId,);
+  }
+  
+  
   CreateRouteVariablesBuilder createRoute ({required String userId, required String name, }) {
     return CreateRouteVariablesBuilder(dataConnect, userId: userId,name: name,);
   }
   
   
-  UpdateUserSessionVariablesBuilder updateUserSession ({required String userId, required String token, required Timestamp expiry, }) {
-    return UpdateUserSessionVariablesBuilder(dataConnect, userId: userId,token: token,expiry: expiry,);
-  }
-  
-  
-  UpdateUserPasswordVariablesBuilder updateUserPassword ({required String email, required String password, }) {
-    return UpdateUserPasswordVariablesBuilder(dataConnect, email: email,password: password,);
-  }
-  
-  
-  UpdateUserAvatarVariablesBuilder updateUserAvatar ({required String email, required String avatarKey, }) {
-    return UpdateUserAvatarVariablesBuilder(dataConnect, email: email,avatarKey: avatarKey,);
+  UpdateUserAvatarVariablesBuilder updateUserAvatar ({required String userId, required String avatarKey, }) {
+    return UpdateUserAvatarVariablesBuilder(dataConnect, userId: userId,avatarKey: avatarKey,);
   }
   
   
@@ -95,6 +102,11 @@ class ExampleConnector {
   
   GetUserVariablesBuilder getUser ({required String userId, }) {
     return GetUserVariablesBuilder(dataConnect, userId: userId,);
+  }
+  
+  
+  IsAdminVariablesBuilder isAdmin ({required String userId, }) {
+    return IsAdminVariablesBuilder(dataConnect, userId: userId,);
   }
   
   
@@ -125,11 +137,6 @@ class ExampleConnector {
   
   GetRouteVariablesBuilder getRoute ({required String routeId, }) {
     return GetRouteVariablesBuilder(dataConnect, routeId: routeId,);
-  }
-  
-  
-  GetUserByTokenVariablesBuilder getUserByToken ({required String token, }) {
-    return GetUserByTokenVariablesBuilder(dataConnect, token: token,);
   }
   
   

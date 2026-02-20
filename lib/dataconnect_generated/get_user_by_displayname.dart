@@ -21,14 +21,12 @@ class GetUserByDisplaynameVariablesBuilder {
 class GetUserByDisplaynameUsers {
   final String userId;
   final String email;
-  final String password;
   final String displayname;
   final Timestamp createdAt;
   GetUserByDisplaynameUsers.fromJson(dynamic json):
   
   userId = nativeFromJson<String>(json['userId']),
   email = nativeFromJson<String>(json['email']),
-  password = nativeFromJson<String>(json['password']),
   displayname = nativeFromJson<String>(json['displayname']),
   createdAt = Timestamp.fromJson(json['createdAt']);
   @override
@@ -43,20 +41,18 @@ class GetUserByDisplaynameUsers {
     final GetUserByDisplaynameUsers otherTyped = other as GetUserByDisplaynameUsers;
     return userId == otherTyped.userId && 
     email == otherTyped.email && 
-    password == otherTyped.password && 
     displayname == otherTyped.displayname && 
     createdAt == otherTyped.createdAt;
     
   }
   @override
-  int get hashCode => Object.hashAll([userId.hashCode, email.hashCode, password.hashCode, displayname.hashCode, createdAt.hashCode]);
+  int get hashCode => Object.hashAll([userId.hashCode, email.hashCode, displayname.hashCode, createdAt.hashCode]);
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['userId'] = nativeToJson<String>(userId);
     json['email'] = nativeToJson<String>(email);
-    json['password'] = nativeToJson<String>(password);
     json['displayname'] = nativeToJson<String>(displayname);
     json['createdAt'] = createdAt.toJson();
     return json;
@@ -65,7 +61,6 @@ class GetUserByDisplaynameUsers {
   GetUserByDisplaynameUsers({
     required this.userId,
     required this.email,
-    required this.password,
     required this.displayname,
     required this.createdAt,
   });

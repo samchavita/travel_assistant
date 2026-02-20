@@ -21,18 +21,18 @@ class GetUserByEmailVariablesBuilder {
 class GetUserByEmailUsers {
   final String userId;
   final String email;
-  final String password;
   final String displayname;
   final Timestamp createdAt;
   final String avatarKey;
+  final String type;
   GetUserByEmailUsers.fromJson(dynamic json):
   
   userId = nativeFromJson<String>(json['userId']),
   email = nativeFromJson<String>(json['email']),
-  password = nativeFromJson<String>(json['password']),
   displayname = nativeFromJson<String>(json['displayname']),
   createdAt = Timestamp.fromJson(json['createdAt']),
-  avatarKey = nativeFromJson<String>(json['avatarKey']);
+  avatarKey = nativeFromJson<String>(json['avatarKey']),
+  type = nativeFromJson<String>(json['type']);
   @override
   bool operator ==(Object other) {
     if(identical(this, other)) {
@@ -45,34 +45,34 @@ class GetUserByEmailUsers {
     final GetUserByEmailUsers otherTyped = other as GetUserByEmailUsers;
     return userId == otherTyped.userId && 
     email == otherTyped.email && 
-    password == otherTyped.password && 
     displayname == otherTyped.displayname && 
     createdAt == otherTyped.createdAt && 
-    avatarKey == otherTyped.avatarKey;
+    avatarKey == otherTyped.avatarKey && 
+    type == otherTyped.type;
     
   }
   @override
-  int get hashCode => Object.hashAll([userId.hashCode, email.hashCode, password.hashCode, displayname.hashCode, createdAt.hashCode, avatarKey.hashCode]);
+  int get hashCode => Object.hashAll([userId.hashCode, email.hashCode, displayname.hashCode, createdAt.hashCode, avatarKey.hashCode, type.hashCode]);
   
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['userId'] = nativeToJson<String>(userId);
     json['email'] = nativeToJson<String>(email);
-    json['password'] = nativeToJson<String>(password);
     json['displayname'] = nativeToJson<String>(displayname);
     json['createdAt'] = createdAt.toJson();
     json['avatarKey'] = nativeToJson<String>(avatarKey);
+    json['type'] = nativeToJson<String>(type);
     return json;
   }
 
   GetUserByEmailUsers({
     required this.userId,
     required this.email,
-    required this.password,
     required this.displayname,
     required this.createdAt,
     required this.avatarKey,
+    required this.type,
   });
 }
 

@@ -5,9 +5,8 @@ class CurrentUser {
   final String? displayName;
   String? avatarKey;
   final String? email;
-  final String? sessionToken;
-
-  CurrentUser({required this.id, this.displayName, this.avatarKey, this.email, this.sessionToken});
+  final String? type; // "client" or "admin"
+  CurrentUser({required this.id, this.displayName, this.avatarKey, this.email, this.type});
 }
 
 final currentUserProvider = StateProvider<CurrentUser?>((ref) => null);

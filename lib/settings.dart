@@ -5,9 +5,9 @@ import 'package:travel_app/providers/current_user.dart';
 import 'main_navigation.dart';
 import 'package:universal_html/html.dart' as html;
 import 'dataconnect_generated/generated.dart';
-import 'package:dbcrypt/dbcrypt.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   runApp(const MyApp());
@@ -130,7 +130,7 @@ class ProfileMenuScreen extends ConsumerWidget {
                                 displayName: state.displayName,
                                 avatarKey: newItem,
                                 email: state.email,
-                                sessionToken: state.sessionToken,
+                                type: state.type,
                               );
                             }
                             return state;
@@ -138,7 +138,7 @@ class ProfileMenuScreen extends ConsumerWidget {
                           
                           // 2. Persist to database
                           ExampleConnector.instance.updateUserAvatar(
-                            email: currentUser.email ?? '',
+                            userId: currentUser.id, // Updated to use userId
                             avatarKey: newItem,
                           ).execute();
                         }
@@ -570,45 +570,76 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
               child: ElevatedButton(
                 onPressed: () async {
                   try {
-                    // obtain email from provider curretn user
-                    final email = currentUser?.email;
+                    final user = FirebaseAuth.instance.currentUser;
                     final currentPassword = _oldPasswordController.text;
                     final newPassword = _newPasswordController.text;
-                    final response = await ExampleConnector.instance.getUserByEmail(email: email ?? '').execute();
-                    final user = response.data.users.first;
-                    final bcrypt = DBCrypt();
 
-                    if (bcrypt.checkpw(currentPassword, user.password)) {
-                      final hashedNewPassword = bcrypt.hashpw(
-                        newPassword.trim(),
-                        bcrypt.gensalt(),
+                    if (user == null || user.email == null) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No user logged in')),
+                        );
+                      }
+                      return;
+                    }
+
+                    // Re-authenticate user to confirm current password
+                    final cred = EmailAuthProvider.credential(
+                      email: user.email!,
+                      password: currentPassword,
+                    );
+
+                    await user.reauthenticateWithCredential(cred);
+
+                    // Update password
+                    await user.updatePassword(newPassword);
+                    print('password changed successfully');
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Password changed successfully'),
+                          backgroundColor: Color(0xFF10A37F),
+                        ),
                       );
-
-                      await ExampleConnector.instance.updateUserPassword(email: email ?? '', password: hashedNewPassword).execute();
-                      print('password changed successfully');
-
 
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => MainNavigation()),
-                        (Route<dynamic> route) =>
-                            false, // This predicate ensures all previous routes are removed
+                        (Route<dynamic> route) => false,
                       );
-                    } else {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Current password is incorrect'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
                     }
 
-                  // Handle change password logic
+                  } on FirebaseAuthException catch (e) {
+                    String errorMessage = 'An error occurred';
+                    if (e.code == 'wrong-password' ||
+                        e.code == 'invalid-credential') {
+                      errorMessage = 'Current password is incorrect';
+                    } else if (e.code == 'weak-password') {
+                      errorMessage = 'The new password is too weak';
+                    } else if (e.code == 'requires-recent-login') {
+                      errorMessage = 'Please log in again before changing password';
+                    }
+
+                    print('Error changing password: ${e.code} - ${e.message}');
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(errorMessage),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   } catch (e) {
-                    // Handle error
                     print('Error changing password: $e');
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error: $e'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -631,7 +662,33 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 const Text("Forgot Password? ",
                     style: TextStyle(color: Colors.grey)),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () async {
+                    final email = FirebaseAuth.instance.currentUser?.email;
+                    if (email != null && email.isNotEmpty) {
+                      try {
+                        await FirebaseAuth.instance
+                            .sendPasswordResetEmail(email: email);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text('Password reset email sent to $email'),
+                              backgroundColor: const Color(0xFF10A37F),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        print('Error sending reset email: $e');
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Error: $e'),
+                                backgroundColor: Colors.red),
+                          );
+                        }
+                      }
+                    }
+                  },
                   child: const Text(
                     "Reset Password",
                     style: TextStyle(
@@ -659,22 +716,16 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
 class LogoutScreen extends ConsumerWidget {
   const LogoutScreen({super.key});
 
-  void _clearSessionTokenCookie() {
-    // Set the cookie with an expired date to remove it
-    final allCookies = html.document.cookie;
-    if (allCookies != null && allCookies.isNotEmpty) {
-      final cookieList = allCookies.split('; ');
-      for (var cookie in cookieList) {
-        if (cookie.startsWith('sessionToken=')) {
-          // delete the cookie from browser
-          html.document.cookie = 'sessionToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
-          debugPrint('Session token cookie cleared');
-          return;
-        }
-      }
+  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
+    await FirebaseAuth.instance.signOut();
+    ref.read(currentUserProvider.notifier).state = null;
+    if (context.mounted) {
+       Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LandingPage()),
+          (route) => false,
+       );
     }
-
-    debugPrint('Session token cookie cleared');
   }
 
 
@@ -743,14 +794,7 @@ class LogoutScreen extends ConsumerWidget {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: () {
-                    _clearSessionTokenCookie();
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LandingPage()),
-                      (route) => false,
-                    );
-                  },
+                  onPressed: () => _handleLogout(context, ref),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.teal,
                     foregroundColor: Colors.white,
